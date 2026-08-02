@@ -1,0 +1,23 @@
+{
+  "name": "ame-design-skills",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Claude Code 用 UI/UX デザイン Skill 集（AME-AI-Review-System による Gate1/Gate2 品質ゲート同梱）。",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
+    "lint:text": "textlint \"**/*.md\"",
+    "commitlint": "commitlint --edit"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+    "markdownlint-cli2": "^0.23.1",
+    "prettier": "^3.0.0",
+    "textlint": "^14.0.0",
+    "textlint-rule-preset-ja-technical-writing": "^12.0.0"
+  }
+}

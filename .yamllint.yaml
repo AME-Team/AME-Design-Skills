@@ -1,0 +1,28 @@
+# yamllint 設定（厳格）。--strict で警告もエラー扱いにする。
+# 導入（グローバル）: uv tool install yamllint
+---
+extends: default
+
+ignore: |
+  **/vendor/**
+  node_modules/
+
+rules:
+  # 行長は他チェックと揃えて 100。コメント無しの長い値も拾う。
+  line-length:
+    max: 100
+    level: error
+  document-start:
+    present: true
+  truthy:
+    # YAML の曖昧な真偽（yes/no/on/off）を禁止。true/false のみ許可。
+    allowed-values: ["true", "false"]
+    check-keys: true
+  comments:
+    min-spaces-from-content: 1
+  comments-indentation: enable
+  empty-lines:
+    max: 1
+  indentation:
+    spaces: 2
+    indent-sequences: true

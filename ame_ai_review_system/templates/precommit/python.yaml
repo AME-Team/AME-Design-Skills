@@ -1,0 +1,53 @@
+---
+# AME AI Review System — pre-commit profile: python
+# Python 静的解析 (ruff/mypy/pyright/codespell) + AI レビューフック。
+minimum_pre_commit_version: "4.0.0"
+fail_fast: true
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.0
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.13.0
+    hooks:
+      - id: mypy
+        additional_dependencies: []
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+
+  # =========================================================================
+  # AME AI Review System — Gate 1 AI review hooks
+  # =========================================================================
+  - repo: local
+    hooks:
+      - id: ai-skip-guard
+        name: "AI review skip guard (Issue #26)"
+        entry: python -m ame_ai_review_system.skip_guard
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      - id: ai-precommit-review
+        name: "AI Code Review (pre-commit)"
+        entry: python -m ame_ai_review_system.precommit_review
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      - id: ai-review-state-reset
+        name: "AI review state reset (post-commit)"
+        entry: python -m ame_ai_review_system.post_commit_reset
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [post-commit]

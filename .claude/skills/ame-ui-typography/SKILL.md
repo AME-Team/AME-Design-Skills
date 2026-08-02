@@ -1,15 +1,15 @@
 ---
 name: ame-ui-typography
 description:
-  AME-AI-Review-System (および共通コンポーネント) のタイポグラフィ基準（フォント定義・多言語対応・見出し階層・読みやすさ）を規定する
-  Skill。React + TypeScript + Tailwind CSS
-  を使用したコンポーネント生成・リファクタリング時、[[ame-ui-philosophy]] と併用して適用する。
+  TypeScript + Tailwind CSS を用いるプロダクト全般に適用可能な、タイポグラフィ基準（フォント定義・多言語対応・見出し階層・読みやすさ）を規定する汎用
+  Skill。コンポーネント生成・リファクタリング時、[[ame-ui-philosophy]] と併用して適用する。
 ---
 
-# AME-AI-Review-System Typography Skill
+# AME Typography Skill
 
-本 Skill は、AME-AI-Review-System のタイポグラフィ（フォント定義・多言語対応・見出し階層）基準を AI Agent
-が実行可能なガイドラインとして定義したものです。核心哲学・配色・スペーシング等の全体デザイン基準は `ame-ui-philosophy`
+本 Skill は、TypeScript + Tailwind CSS を用いる各種プロダクトに適用可能な、汎用タイポグラフィ（フォント定義・多言語対応・見出し階層）基準を
+AI Agent が実行可能なガイドラインとして定義したものです。特定プロジェクト専用ではなく、同スタックを使う任意のリポジトリで利用できます。
+核心哲学・配色・スペーシング等の全体デザイン基準は `ame-ui-philosophy`
 Skill を参照してください。本 Skill はその一部であったタイポグラフィ関連ルールを独立させたものです。
 
 ## 1. 言語別フォント定義（Default / Serif / Mono）

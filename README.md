@@ -1,7 +1,8 @@
 # AME-Design-Skills
 
-Claude Code 用の Skill 集です。AME-AI-Review-System およびその共通コンポーネントの UI/UX
-デザイン規約を、AI Agent（Claude Code）が実行時に参照・適用できる Skill として定義しています。
+Claude Code 用の Skill 集です。TypeScript + Tailwind CSS
+を用いるプロダクト全般に適用可能な汎用 UI/UX デザイン規約を、AI Agent（Claude Code）が実行時に参照・適用できる Skill
+として定義しています。特定プロジェクト専用ではなく、同スタックを使う任意のリポジトリに導入できます。
 
 本 README は **AI Agent がこのリポジトリを取得してインストール作業を代行する**ことを想定して書かれています。人間が読む場合も、同じ手順でセットアップできます。
 
@@ -90,7 +91,7 @@ Get-ChildItem ".claude\skills" -Directory | ForEach-Object {
 ~/.claude/skills/ame-ui-typography/SKILL.md
 ```
 
-Claude Code はこれらの `description` を基に、React + TypeScript + Tailwind CSS
+Claude Code はこれらの `description` を基に、TypeScript + Tailwind CSS
 のコンポーネント生成・リファクタリング時に自動で Skill を適用します。
 
 ## 更新方法

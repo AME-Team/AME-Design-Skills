@@ -1,18 +1,17 @@
 ---
 name: ame-ui-philosophy
 description:
-  AME-AI-Review-System (および共通コンポーネント) の UI・UX デザインの核心哲学・原則・配色・スペーシング・アニメーション・アクセシビリティ・多言語対応・アイコン/図表・実装ワークフローを規定する
-  Skill。React + TypeScript + Tailwind CSS
-  を使用したコンポーネント生成・リファクタリング時に適用する。タイポグラフィ（フォント定義・見出し階層）の詳細は
+  TypeScript + Tailwind CSS を用いるプロダクト全般に適用可能な、UI・UX デザインの核心哲学・原則・配色・スペーシング・アニメーション・アクセシビリティ・多言語対応・アイコン/図表・実装ワークフローを規定する汎用
+  Skill。コンポーネント生成・リファクタリング時に適用する。タイポグラフィ（フォント定義・見出し階層）の詳細は
   `ame-ui-typography` Skill を参照。
 ---
 
-# AME-AI-Review-System UI Philosophy Skill
+# AME UI Philosophy Skill
 
-本 Skill は、AME-AI-Review-System のデザイン・UX 統一基準を AI Agent
-が実行可能なガイドラインとして定義したものです。本リポジトリ AME-AI-Sandbox へ移植・適用しました（移植元:
-[tarminjapan/AME-AI-Review-System](https://github.com/tarminjapan/AME-AI-Review-System)）。
-React + TypeScript + Tailwind CSS でコンポーネント生成・修正・リファクタリングを行う際は、必ず本ドキュメントを適用してください。
+本 Skill は、TypeScript + Tailwind CSS
+を用いる各種プロダクト・共通コンポーネントに適用可能な、汎用 UI/UX デザイン・統一基準を AI Agent
+が実行可能なガイドラインとして定義したものです。特定プロジェクト専用ではなく、同スタックを使う任意のリポジトリで利用できます。
+コンポーネント生成・修正・リファクタリングを行う際は、必ず本ドキュメントを適用してください。
 タイポグラフィ（フォント定義・多言語フォント切替・見出し階層）の詳細ルールは [[ame-ui-typography]] Skill
 に分離されているため、併用すること。
 
@@ -41,9 +40,9 @@ Tailwind クラス適用時は次を厳守する。
 
 - 既知のサービス・機能・操作に紐づく要素（ボタン、ラベル、ナビゲーション項目等）には、文言だけでなく対応するアイコンを併記する。例:
   「GitHub」ボタンには GitHub アイコン、「コピー」操作には Copy アイコンを付与する。
-- アイコンライブラリは `lucide-react`
-  を標準とする。ストローク型・`currentColor` 継承のため、本 Skill の配色/ダークモード規定（§4）と親和性が高く、装飾目的の多色アイコン（禁止事項
-  §9 参照）を避けられる。
+- アイコンセットは [Lucide](https://lucide.dev/) を標準とする（利用スタックに応じたパッケージを選択する。例:
+  `lucide-react`, `lucide-vue-next`, `lucide-svelte`）。ストローク型・`currentColor`
+  継承のため、本 Skill の配色/ダークモード規定（§4）と親和性が高く、装飾目的の多色アイコン（禁止事項 §9 参照）を避けられる。
 - サイズは Tailwind の 8px グリッドに揃える（インラインテキスト添え字は `size-4`、単体ボタン・見出し添え字は
   `size-5`）。任意ピクセル値 (`w-[18px]`) は禁止。
 - アイコン単体で意味を持たせる場合（アイコンのみボタン等）は、必ず `aria-label`
@@ -180,7 +179,7 @@ Tailwind クラス適用時は次を厳守する。
 - 8px グリッドで要素を配置し、余白で情報構造を分離する
 - 関連要素は `gap-*` で近接、非関連要素は `mt-*`/`p-*` で分離する
 - 線ではなく余白を優先し、角丸は `rounded-md/lg` に限定する
-- 既知のサービス・操作に紐づく要素にはアイコン（`lucide-react`）を併記し、図表は HTML/SVG
+- 既知のサービス・操作に紐づく要素にはアイコン（Lucide）を併記し、図表は HTML/SVG
   のどちらで実装するかを内容に応じて判断する（§3 準拠）
 
 ### Step 3: スタイル適用（Typography / Color / i18n）

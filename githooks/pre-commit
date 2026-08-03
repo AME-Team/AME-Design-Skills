@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# =========================================================================
+# Native pre-commit hook — AME-AI-Review-System (Issue #26)
+#
+# 背景: pre-commit フレームワークの SKIP 環境変数は「リスト中のフックの entry point
+# を呼び出さずにスキップする」仕様のため、フレームワーク内のガードフック
+# (ai-skip-guard) は SKIP=ai-skip-guard,ai-precommit-review で容易に迂回される。
+#
+# 本スクリプトは Git が直接起動するネイティブフックであり、pre-commit フレームワーク
+# の SKIP 制御の及ばないレイヤで ai-precommit-review のバイパスを検知・ブロックして
+# から、pre-commit フレームワークへ処理を委譲する。
+# =========================================================================
+set -euo pipefail
+
+dir="$(cd "$(dirname "$0")" && pwd)"
+
+# Gate: SKIP による ai-precommit-review の迂回を検査。
+#   許可条件: root/sudo 実行、または root 所有のバイパストークンファイル。
+#   非許可の場合は exit 1 でコミットをブロックする (set -e により即時終了)。
+python3 -m ame_ai_review_system.skip_guard
+
+# 委譲: pre-commit フレームワークの pre-commit ステージを実行。
+exec "$dir/lib/run.sh" pre-commit "$@"

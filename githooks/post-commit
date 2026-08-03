@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# post-commit フック — pre-commit フレームワークへ委譲 (streak リセット等を実行)。
+set -euo pipefail
+dir="$(cd "$(dirname "$0")" && pwd)"
+exec "$dir/lib/run.sh" post-commit "$@"

@@ -1,0 +1,195 @@
+# pre-commit フック定義（AME-Design-Skills / Markdown 運用向けトリム版）
+#
+# 方針: 本リポジトリは Markdown（Skill 集）・設定ファイル・YAML・シェルが中心で
+#       Python/TypeScript/SQL のプロジェクトコードを持たない。そのため AME-AI-Review-System
+#       本家の full 構成からコード向けフック（ruff/mypy/pyright/eslint/tsc/stylelint/
+#       sqlfluff/semgrep-custom/pytest/vitest）を削除し、Markdown/設定/シェル/セキュリティ/
+#       Git衛生 + AI レビュー（Gate 1）に特化した構成とする。
+#
+#   - 標準ツールは pre-commit のミラーリポジトリから取得（インストール負荷最小）。
+#   - npm 系（markdownlint-cli2 / textlint / prettier / commitlint）はルートの
+#     `package.json` から `npm ci` で導入し `./node_modules/.bin/*` を直接呼ぶ。
+#   - AI レビュー系フックは vendored な `ame_ai_review_system/` 配下の Python を使用。
+#
+# ── 初回セットアップ ──────────────────────────────────────────────────────────
+#   # システムツール
+#   curl -LsSf https://astral.sh/uv/install.sh | sh
+#   uv tool install pre-commit
+#   sudo apt update && sudo apt install -y shellcheck gitleaks codespell yamllint
+#   # actionlint はバイナリを取得（setup.md 参照）
+#   # npm 依存（markdownlint-cli2 / textlint / prettier / commitlint）
+#   npm ci
+#   # フック登録（post-commit は streak リセットに必須）
+#   pre-commit install --install-hooks -t pre-commit -t commit-msg -t pre-push -t post-commit
+#   # (推奨) SKIP バイパス強制ブロック
+#   bash scripts/install-hooks.sh
+#
+# ── 全ファイルに手動でかける ────────────────────────────────────────────────
+#   pre-commit run --all-files
+---
+minimum_pre_commit_version: "4.0.0"
+default_install_hook_types: [pre-commit, commit-msg, pre-push, post-commit]
+fail_fast: true # 1フック失敗で後続フックを即停止。静的解析が通った場合のみ AI レビューへ進む。
+
+# vendored レビューシステム本体・依存ディレクトリ・ロックファイルは静的解析対象外。
+# （AI レビューは always_run + pass_filenames: false なのでこの exclude の影響を受けない）
+exclude: |
+  (?x)^(
+      ame_ai_review_system/.*|
+      (^|/)node_modules/.*|
+      (^|/)\.venv/.*|
+      (^|/)\.git/.*|
+      (^|/)dist/.*|
+      (^|/)build/.*|
+      .*\.lock$|
+      package-lock\.json
+  )$
+
+repos:
+  # =========================================================================
+  # 1) 汎用ファイル衛生チェック（pre-commit-hooks）
+  # =========================================================================
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: \.md$ # Markdown の意味のある行末空白を保持
+      - id: end-of-file-fixer
+        exclude: \.md$
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-yaml
+        args: [--unsafe]
+      - id: check-toml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-shebang-scripts-are-executable
+      - id: forbid-new-submodules
+
+  # =========================================================================
+  # 2) 綴りミス検出（コード・コメント・ドキュメント横断）
+  # =========================================================================
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+
+  # =========================================================================
+  # 3) シークレットスキャン
+  # =========================================================================
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.0
+    hooks:
+      - id: gitleaks
+        entry: gitleaks protect --staged
+
+  # =========================================================================
+  # 4) YAML lint（strict）。設定は .yamllint.yaml
+  # =========================================================================
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: [--strict]
+
+  # =========================================================================
+  # 5) シェルスクリプト静的解析。設定は .shellcheckrc
+  # =========================================================================
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+
+  # =========================================================================
+  # 6) GitHub Actions ワークフロー構文検証
+  # =========================================================================
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+
+  # =========================================================================
+  # 7) ローカルフック（npm 系 Markdown/フォーマット + AI レビュー）
+  # =========================================================================
+  - repo: local
+    hooks:
+      # --- Markdown lint（自動修正可能なものは --fix で直す）。設定は .markdownlint-cli2.jsonc
+      - id: markdownlint-cli2
+        name: markdownlint-cli2 (Markdown)
+        entry: ./node_modules/.bin/markdownlint-cli2 --fix
+        language: system
+        types: [markdown]
+        pass_filenames: false
+        require_serial: true
+
+      # --- Mermaid 記法チェック（ame_ai_review_system 同梱のバリデータ）
+      - id: mermaid-check
+        name: mermaid syntax check
+        entry: python3 -m ame_ai_review_system.mermaid_check
+        language: system
+        types: [markdown]
+        pass_filenames: true
+        require_serial: true
+
+      # --- textlint（日本語散文品質）。設定は .textlintrc
+      - id: textlint
+        name: textlint (Japanese prose)
+        entry: ./node_modules/.bin/textlint
+        language: system
+        types: [markdown]
+        pass_filenames: true
+        require_serial: true
+
+      # --- Prettier（MD/YAML/JSON フォーマット）。設定は .prettierrc / .prettierignore
+      - id: prettier
+        name: prettier (MD/YAML/JSON)
+        entry: ./node_modules/.bin/prettier --check
+        language: system
+        types_or: [markdown, yaml, json]
+        pass_filenames: true
+
+      # --- Conventional Commits 強制。設定は .commitlintrc.json
+      - id: commitlint
+        name: commitlint (Conventional Commits enforcement)
+        entry: ./node_modules/.bin/commitlint --edit
+        language: system
+        stages: [commit-msg]
+        always_run: true
+
+      # =====================================================================
+      # 8) AI コードレビュー (Gate 1 / pre-commit)
+      #    指摘 0 件なら PASS。CRITICAL/HIGH/MIDDLE/WARNING を含めば FAIL。
+      #    LOW/INFO のみが 2 回連続なら無限ループ回避で PASS。エンジン失敗時は fail-closed。
+      #    既定で precommit_engine:"auto" が opencode を自動検出する。
+      # =====================================================================
+
+      # --- ai-precommit-review の SKIP を強制ブロック (Issue #26)
+      - id: ai-skip-guard
+        name: AI review skip guard (Issue #26)
+        entry: python3 -m ame_ai_review_system.skip_guard
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      # --- pre-commit AI レビュー本体
+      - id: ai-precommit-review
+        name: AI Code Review (pre-commit)
+        entry: python3 -m ame_ai_review_system.precommit_review
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      # --- コミット成功時に LOW/INFO の streak カウンタをリセット (post-commit)
+      - id: ai-review-state-reset
+        name: AI review state reset (post-commit)
+        entry: python3 -m ame_ai_review_system.post_commit_reset
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [post-commit]

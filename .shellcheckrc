@@ -1,0 +1,4 @@
+external-sources=true
+# SC2317: trap で間接的に呼ばれる関数 (_cleanup 等) が未使用と誤検出されるため
+# SC2329: trap で間接的に呼ばれる関数 (_cleanup 等) が未使用と誤検出されるため
+disable=SC2317,SC2329

@@ -1,0 +1,51 @@
+# ============================================================
+#  AME-Design-Skills .gitignore
+#  ソースのみ追跡し、ビルド生成物・キャッシュ・一時ファイル・利用者固有データは除外する。
+#  注意: 本リポジトリの本体は .claude/skills/ 配下のため .claude/ は追跡対象（除外しない）。
+# ============================================================
+
+# --- Python（vendored ame_ai_review_system の実行/型検査で生成されるもの）---
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+.python-version
+
+# --- ツール／キャッシュ ---
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.sqlfluff_cache/
+.stylelintcache
+.eslintcache
+
+# --- Node（dev ツールのみ）---
+node_modules/
+# TS エンジンサイドカーの lockfile は npm install で都度生成するため管理対象外
+ame_ai_review_system/engines/ts/package-lock.json
+
+# --- OS / 同期クライアント ---
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.tmp
+.DS_Store
+
+# --- エディタ ---
+.vscode/
+.idea/
+*.swp
+*~
+actionlint
+
+# --- ユーザー固有設定 (Git 管理対象外) ---
+# Gate 1 のエンジン/モデルを環境依存で上書きするファイル。存在しなければ無視される。
+ame_ai_review_system/config.user.json
+.env

@@ -4,7 +4,7 @@
 #  注意: 本リポジトリの本体は .claude/skills/ 配下のため .claude/ は追跡対象（除外しない）。
 # ============================================================
 
-# --- Python（vendored ame_ai_review_system の実行/型検査で生成されるもの）---
+# --- Python（静的解析スクリプトの実行/型検査で生成されるもの）---
 __pycache__/
 *.py[cod]
 *$py.class
@@ -28,8 +28,6 @@ ENV/
 
 # --- Node（dev ツールのみ）---
 node_modules/
-# TS エンジンサイドカーの lockfile は npm install で都度生成するため管理対象外
-ame_ai_review_system/engines/ts/package-lock.json
 
 # --- OS / 同期クライアント ---
 Thumbs.db
@@ -46,6 +44,4 @@ desktop.ini
 actionlint
 
 # --- ユーザー固有設定 (Git 管理対象外) ---
-# Gate 1 のエンジン/モデルを環境依存で上書きするファイル。存在しなければ無視される。
-ame_ai_review_system/config.user.json
 .env

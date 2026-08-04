@@ -125,7 +125,11 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 
 コミット時 AI レビュー（Gate 1）は、ローカルで起動中の `opencode serve`（既定 `http://127.0.0.1:4096`）へ接続します。
 
-serve を Basic 認証付きで起動する場合は、`scripts/precommit-review.sh` が serve プロセス（`/proc/<pid>/environ`）から認証情報を自動取得します。取得した `OPENCODE_SERVER_USERNAME` / `OPENCODE_SERVER_PASSWORD` を接続に使用します。
+serve を Basic 認証付きで起動する場合は、認証情報を環境変数で設定して起動してください。設定する変数は `OPENCODE_SERVER_USERNAME` と `OPENCODE_SERVER_PASSWORD` です。
+
+`scripts/precommit-review.sh` は、既定ポート 4096 で起動中の serve プロセスから認証情報を自動取得します。取得元は `/proc/<pid>/environ` です。複数の serve が起動している場合は、既定ポートで起動中のプロセスが対象です。
+
+なお、`/proc/<pid>/environ` は同一ユーザーの全プロセスから読み取り可能です。認証情報の取り扱いに注意し、ローカル開発用途での利用を想定してください。
 
 PR レビュー（Gate 2）には GitHub App の Secrets が必要です（`AME_AI_REVIEWER_APP_ID` / `AME_AI_REVIEWER_APP_PRIVATE_KEY`）。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
 

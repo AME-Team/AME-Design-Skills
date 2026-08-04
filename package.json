@@ -2,7 +2,7 @@
   "name": "ame-design-skills",
   "version": "0.1.0",
   "private": true,
-  "description": "Claude Code 用 UI/UX デザイン Skill 集（AME-AI-Review-System による Gate1/Gate2 品質ゲート同梱）。",
+  "description": "Claude Code 用 UI/UX デザイン Skill 集。",
   "license": "MIT",
   "scripts": {
     "format": "prettier --write .",

@@ -4,7 +4,7 @@ Scans markdown files for Mermaid code blocks and detects syntax errors such as
 subgraph/node labels with misused bracket delimiters that cause parse failures.
 
 Usage:
-    python3 -m ame_ai_review_system.mermaid_check file1.md file2.md
+    python3 scripts/mermaid_check.py file1.md file2.md
 """
 
 from __future__ import annotations

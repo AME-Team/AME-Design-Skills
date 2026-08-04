@@ -14,11 +14,10 @@
   },
   // リポジトリ内の全 Markdown を対象（README.md / .claude/skills/**/*.md 含む）。
   "globs": ["**/*.md"],
-  // vendored レビューシステム本体は上流で既に lint 済みのため除外。
+  // 依存ディレクトリは除外。
   "ignores": [
     "**/node_modules/**",
     "**/vendor/**",
-    "**/.venv/**",
-    "ame_ai_review_system/**"
+    "**/.venv/**"
   ]
 }

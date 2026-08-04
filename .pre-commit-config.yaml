@@ -1,31 +1,35 @@
-# pre-commit フック定義（AME-Design-Skills / Markdown 運用向け）
+---
+# AME AI Review System — pre-commit profile: text
+# ドキュメント/文章の静的解析 (codespell / markdownlint / textlint) + AI レビューフック。
+# 本リポジトリ向け拡張: セキュリティ (gitleaks) / 設定品質 (yamllint/shellcheck/actionlint) /
+# Git衛生 (pre-commit-hooks) を統合復元している。
 #
-# 方針: 本リポジトリは Markdown（Skill 集）・設定ファイル・YAML・シェルが中心で
-#       Python/TypeScript/SQL のプロジェクトコードを持たない。そのためコード向け
-#       フック（ruff/mypy/pyright/eslint/tsc/stylelint/sqlfluff/semgrep/pytest/vitest）
-#       を除外し、Markdown/設定/シェル/セキュリティ/Git衛生の静的解析に特化する。
+# 削除した既存フックと理由（AME-AI-Review-System 導入時、init 生成物へ置き換え）:
+#   - commitlint / prettier: pre-commit フックとしては廃止。package.json に定義済みの
+#     npm run commitlint / npm run format を手動実行のみ提供する。
+#     コミットメッセージの自動強制は行わず、品質は PR レビュー (Gate 2) で確認する。
+#   - mermaid-check: 図表構文検証。スクリプト scripts/mermaid_check.py は維持しており、
+#     必要に応じ local フックとして再登録可能。
 #
-#   - 標準ツールは pre-commit のミラーリポジトリから取得（インストール負荷最小）。
-#   - npm 系（markdownlint-cli2 / textlint / prettier / commitlint）はルートの
-#     `package.json` から `npm ci` で導入し `./node_modules/.bin/*` を直接呼ぶ。
-#   - ローカル静的解析スクリプトは `scripts/` 配下を使用。
+# markdownlint-cli2 / textlint はルート `package.json` の npm 依存
+# (`./node_modules/.bin/*`) を直接呼ぶ。`ame-ai-reviewer init` 生成のリポジトリ参照
+# (markdownlint-cli の markdownlint-cli2 / textlint の textlint) はマニフェスト不備のため
+# 使用しない。
 #
-# ── 初回セットアップ ──────────────────────────────────────────────────────────
-#   # システムツール
-#   curl -LsSf https://astral.sh/uv/install.sh | sh
-#   uv tool install pre-commit
-#   sudo apt update && sudo apt install -y shellcheck gitleaks codespell yamllint
-#   # actionlint はバイナリを取得（setup.md 参照）
+# ── 初回セットアップ ──────────────────────────
+#   # LLM エンジンとレビューコア（.venv に導入）
+#   uv venv .venv --python 3.12
+#   source .venv/bin/activate
+#   uv pip install <AME-AI-Review-System wheel v0.1.0>（URL は setup.md 参照）
 #   # npm 依存（markdownlint-cli2 / textlint / prettier / commitlint）
 #   npm ci
-#   # フック登録
-#   pre-commit install --install-hooks -t pre-commit -t commit-msg
+#   # フック登録（post-commit は Gate 1 AI レビューの streak リセットに必須）
+#   pre-commit install --install-hooks -t pre-commit -t post-commit
 #
-# ── 全ファイルに手動でかける ────────────────────────────────────────────────
-#   pre-commit run --all-files
----
+# ── 全ファイルに手動でかける ──────────────────
+#   SKIP=ai-precommit-review pre-commit run --all-files
 minimum_pre_commit_version: "4.0.0"
-default_install_hook_types: [pre-commit, commit-msg]
+default_install_hook_types: [pre-commit, post-commit]
 fail_fast: true # 1フック失敗で後続フックを即停止。
 
 # 依存ディレクトリ・ロックファイルは静的解析対象外。
@@ -37,7 +41,7 @@ exclude: |
       (^|/)dist/.*|
       (^|/)build/.*|
       .*\.lock$|
-      package-lock\.json
+      (^|.*/)package-lock\.json$
   )$
 
 repos:
@@ -72,6 +76,7 @@ repos:
     rev: v2.3.0
     hooks:
       - id: codespell
+        exclude: (^|.*/)package-lock\.json$
 
   # =========================================================================
   # 3) シークレットスキャン
@@ -93,11 +98,15 @@ repos:
 
   # =========================================================================
   # 5) シェルスクリプト静的解析。設定は .shellcheckrc
+  #    (shellcheck-precommit のデフォルトは docker_image のため、システムの
+  #     shellcheck バイナリを直接使うよう上書きする)
   # =========================================================================
   - repo: https://github.com/koalaman/shellcheck-precommit
     rev: v0.10.0
     hooks:
       - id: shellcheck
+        language: system
+        entry: shellcheck
 
   # =========================================================================
   # 6) GitHub Actions ワークフロー構文検証
@@ -108,11 +117,11 @@ repos:
       - id: actionlint
 
   # =========================================================================
-  # 7) ローカルフック（npm 系 Markdown/フォーマット + 構文チェック）
+  # 7) ローカルフック（npm 系 Markdown lint + textlint + AI レビュー）
   # =========================================================================
   - repo: local
     hooks:
-      # --- Markdown lint（自動修正可能なものは --fix で直す）。設定は .markdownlint-cli2.jsonc
+      # --- Markdown lint（自動修正）。設定は .markdownlint-cli2.jsonc
       - id: markdownlint-cli2
         name: markdownlint-cli2 (Markdown)
         entry: ./node_modules/.bin/markdownlint-cli2 --fix
@@ -121,36 +130,40 @@ repos:
         pass_filenames: false
         require_serial: true
 
-      # --- Mermaid 記法チェック（scripts/ 配下のバリデータ）
-      - id: mermaid-check
-        name: mermaid syntax check
-        entry: python3 scripts/mermaid_check.py
-        language: system
-        types: [markdown]
-        pass_filenames: true
-        require_serial: true
-
-      # --- textlint（日本語散文品質）。設定は .textlintrc
+      # --- textlint（日本語散文品質、自動修正）。設定は .textlintrc
+      #     ja-no-mixed-period（文末句点の統一・検出）は .textlintrc で無効化。
+      #     コードブロック導入のラベル行など、句点で終わらない表記を許容するため。
       - id: textlint
         name: textlint (Japanese prose)
-        entry: ./node_modules/.bin/textlint
+        entry: ./node_modules/.bin/textlint --fix
         language: system
         types: [markdown]
         pass_filenames: true
         require_serial: true
 
-      # --- Prettier（MD/YAML/JSON フォーマット）。設定は .prettierrc / .prettierignore
-      - id: prettier
-        name: prettier (MD/YAML/JSON)
-        entry: ./node_modules/.bin/prettier --check
+      # --- AI review skip guard (Issue #26)
+      - id: ai-skip-guard
+        name: "AI review skip guard (Issue #26)"
+        entry: python -m ame_ai_review_system.skip_guard
         language: system
-        types_or: [markdown, yaml, json]
-        pass_filenames: true
-
-      # --- Conventional Commits 強制。設定は .commitlintrc.json
-      - id: commitlint
-        name: commitlint (Conventional Commits enforcement)
-        entry: ./node_modules/.bin/commitlint --edit
-        language: system
-        stages: [commit-msg]
+        pass_filenames: false
         always_run: true
+        stages: [pre-commit]
+
+      # --- AI Code Review (pre-commit) — Gate 1
+      - id: ai-precommit-review
+        name: "AI Code Review (pre-commit)"
+        entry: ./scripts/precommit-review.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
+
+      # --- AI review state reset (post-commit)
+      - id: ai-review-state-reset
+        name: "AI review state reset (post-commit)"
+        entry: python -m ame_ai_review_system.post_commit_reset
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [post-commit]

@@ -1,0 +1,38 @@
+---
+# AME AI Review System — インライン返信に対する LGTM/追加指摘判断のラッパ (配布先用)。
+# `ame-ai-reviewer init` で生成される。v0.1.0 はリリースタグ (例: v1.0.0) に置換される。
+# secrets 登録のエンジン情報 (Issue #40) も引き継ぐ。
+
+name: AI Review Reply
+
+"on":
+  pull_request_review_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  reply:
+    uses: tarminjapan/AME-AI-Review-System/.github/workflows/review-reply.yml@v0.1.0
+    with:
+      pr_number: ${{ github.event.pull_request.number }}
+      comment_id: ${{ github.event.comment.id }}
+      comment_body: ${{ github.event.comment.body }}
+      comment_user: ${{ github.event.comment.user.login }}
+      system_ref: v0.1.0
+      review_engine: ${{ vars.REVIEW_ENGINE || '' }}
+      review_model: ${{ vars.REVIEW_MODEL || '' }}
+      reply_model: ${{ vars.REPLY_MODEL || '' }}
+      review_thinking: ${{ vars.REVIEW_THINKING || '' }}
+    secrets:
+      app-id: ${{ secrets.AME_AI_REVIEWER_APP_ID }}
+      private-key: ${{ secrets.AME_AI_REVIEWER_APP_PRIVATE_KEY }}
+      opencode-auth-b64: ${{ secrets.OPENCODE_AUTH_B64 }}
+      antigravity-oauth-b64: ${{ secrets.ANTIGRAVITY_OAUTH_B64 }}
+      gemini-oauth-b64: ${{ secrets.GEMINI_OAUTH_B64 }}
+      review-engine: ${{ secrets.REVIEW_ENGINE }}
+      review-model: ${{ secrets.REVIEW_MODEL }}
+      reply-model: ${{ secrets.REPLY_MODEL }}
+      review-thinking: ${{ secrets.REVIEW_THINKING }}

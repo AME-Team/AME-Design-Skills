@@ -123,6 +123,10 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 - `.github/workflows/` … `/` で始まる PR コメント（`/request-review` 等）で起動する AI レビュー CI
 - `.pre-commit-config.yaml` … ローカル静的解析とコミット時 AI レビュー（Gate 1）
 
+コミット時 AI レビュー（Gate 1）は、ローカルで起動中の `opencode serve`（既定 `http://127.0.0.1:4096`）へ接続します。
+
+serve を Basic 認証付きで起動する場合は、`scripts/precommit-review.sh` が serve プロセス（`/proc/<pid>/environ`）から認証情報を自動取得します。取得した `OPENCODE_SERVER_USERNAME` / `OPENCODE_SERVER_PASSWORD` を接続に使用します。
+
 PR レビュー（Gate 2）には GitHub App の Secrets が必要です（`AME_AI_REVIEWER_APP_ID` / `AME_AI_REVIEWER_APP_PRIVATE_KEY`）。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
 
 - [AME-AI-Review-System setup.md (v0.1.0)](https://github.com/tarminjapan/AME-AI-Review-System/blob/v0.1.0/ame_ai_review_system/docs/setup.md)

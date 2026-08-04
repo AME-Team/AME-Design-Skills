@@ -1,8 +1,9 @@
 # AME-Design-Skills
 
 Claude Code 用の Skill 集です。TypeScript + Tailwind CSS
-を用いるプロダクト全般に適用可能な汎用 UI/UX デザイン規約を、AI Agent（Claude Code）が実行時に参照・適用できる Skill
-として定義しています。特定プロジェクト専用ではなく、同スタックを使う任意のリポジトリに導入できます。
+を用いるプロダクト全般に適用可能な汎用 UI/UX デザイン規約を定義しています。
+AI Agent（Claude Code）が実行時に参照・適用できる Skill として提供します。特定プロジェクト専用ではなく、
+同スタックを使う任意のリポジトリに導入できます。
 
 本 README は **AI Agent がこのリポジトリを取得してインストール作業を代行する**ことを想定して書かれています。人間が読む場合も、同じ手順でセットアップできます。
 
@@ -113,3 +114,15 @@ rm -rf ~/.claude/skills/ame-ui-philosophy ~/.claude/skills/ame-ui-typography
 Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-philosophy"
 Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 ```
+
+## AI Review System（開発者向け）
+
+本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System v0.1.0）が導入されています。
+
+- `.ame-review/` … 動作設定（`config.json`）、レビュープロンプト（`review_prompt.txt`）、LLM エンジンサイドカー（`engines-ts/`）
+- `.github/workflows/` … `/` で始まる PR コメント（`/request-review` 等）で起動する AI レビュー CI
+- `.pre-commit-config.yaml` … ローカル静的解析とコミット時 AI レビュー（Gate 1）
+
+PR レビュー（Gate 2）には GitHub App の Secrets が必要です（`AME_AI_REVIEWER_APP_ID` / `AME_AI_REVIEWER_APP_PRIVATE_KEY`）。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
+
+- [AME-AI-Review-System setup.md (v0.1.0)](https://github.com/tarminjapan/AME-AI-Review-System/blob/v0.1.0/ame_ai_review_system/docs/setup.md)

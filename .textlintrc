@@ -5,7 +5,8 @@
         "max": 100
       },
       "no-exclamation-question-mark": false,
-      "no-unmatched-pair": false
+      "no-unmatched-pair": false,
+      "ja-no-mixed-period": false
     }
   }
 }

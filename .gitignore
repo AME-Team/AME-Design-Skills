@@ -45,3 +45,4 @@ actionlint
 
 # --- ユーザー固有設定 (Git 管理対象外) ---
 .env
+config.user.json

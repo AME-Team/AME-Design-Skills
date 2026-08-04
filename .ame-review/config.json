@@ -1,0 +1,12 @@
+{
+  "precommit_review_enabled": true,
+  "precommit_require_static_checks": true,
+  "pr_review_require_static_checks": true,
+  "ai_review_enforce_no_skip": true,
+  "review_include_package_dir": false,
+  "precommit_engine": "auto",
+  "show_engine_info_gate1": true,
+  "show_engine_info_gate2": true,
+  "review_budget_usd": 2.0,
+  "reply_budget_usd": 0.2
+}

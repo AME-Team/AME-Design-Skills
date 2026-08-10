@@ -20,14 +20,14 @@ description:
 ### フロー（Gate 1）
 
 1. **静的解析**（`precommit_require_static_checks` が有効時）
-   - `ruff` / `mypy` / `semgrep` を staged ファイルに対して実行
+   - 本リポジトリでは markdownlint-cli2 / textlint / codespell / gitleaks / yamllint / shellcheck / actionlint 等を staged ファイルに対して実行
    - エラー検出時 → ブロック（コミット失敗）。コードを修正して再 `git add` する
 2. **AI レビュー**（静的解析パス後）
    - `precommit_review.py` が staged + ブランチ差分をレビュー
    - PR レビューと同じプロンプトを使用
 3. **コミット可否判定**
    - `CRITICAL` / `HIGH` / `MIDDLE` → ブロック
-   - `LOW` / `INFO` のみ → streak カウンタ増加
+   - `LOW` のみ → streak カウンタ増加
    - **streak が 2 に達したらエスケープハッチ（PASS）** — 無限ループ回避
 4. **コミット成功時**
    - `post-commit` フックが streak を 0 にリセット
@@ -51,7 +51,7 @@ PR 上で実行する品質ゲートです。以下のループを未解決ス�
 2. **レビュー依頼** — PR コメントで `/request-review`（エイリアス `/review`）を投稿
    - API: `POST /repos/{owner}/{repo}/issues/{pr}/comments`
    - 本文: `/request-review`
-3. **Circuit Breaker** — 静的解析（ruff/mypy/semgrep）を先行実行
+3. **Circuit Breaker** — 静的解析（本リポジトリでは markdownlint-cli2 / textlint / codespell / gitleaks / yamllint / shellcheck / actionlint 等）を先行実行
    - エラー 1 件でもあれば AI レビューをスキップ。エラー修正後に再依頼
 4. **AI レビュー実行** → インラインレビューコメントが PR に投稿される
 5. **レビューコメント取得**

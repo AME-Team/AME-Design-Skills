@@ -29,6 +29,10 @@ ENV/
 # --- Node（dev ツールのみ）---
 node_modules/
 
+# --- AME AI Review System の TS エンジンサイドカー ---
+# package-lock.json は paths.ensure_engines_ts() が npm install で都度生成する（追跡対象外）。
+.ame-review/engines-ts/package-lock.json
+
 # --- OS / 同期クライアント ---
 Thumbs.db
 ehthumbs.db

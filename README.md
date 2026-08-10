@@ -117,11 +117,12 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 
 ## AI Review System（開発者向け）
 
-本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System v0.1.0）が導入されています。
+本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System v0.2.4）が導入されています。
 
 - `.ame-review/` … 動作設定（`config.json`）、レビュープロンプト（`review_prompt.txt`）、LLM エンジンサイドカー（`engines-ts/`）
 - `.github/workflows/` … `/` で始まる PR コメント（`/request-review` 等）で起動する AI レビュー CI
 - `.pre-commit-config.yaml` … ローカル静的解析とコミット時 AI レビュー（Gate 1）
+- `.claude/skills/review-round/` … AI エージェントが Dual-Gate レビューラウンドを自律実行するためのスキル
 
 コミット時 AI レビュー（Gate 1）は、ローカルで起動中の `opencode serve`（既定 `http://127.0.0.1:4096`）へ接続します。
 
@@ -133,4 +134,4 @@ serve を Basic 認証付きで起動する場合は、認証情報を環境変�
 
 PR レビュー（Gate 2）には GitHub App の Secrets が必要です（`AME_AI_REVIEWER_APP_ID` / `AME_AI_REVIEWER_APP_PRIVATE_KEY`）。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
 
-- [AME-AI-Review-System setup.md (v0.1.0)](https://github.com/tarminjapan/AME-AI-Review-System/blob/v0.1.0/ame_ai_review_system/docs/setup.md)
+- [AME-AI-Review-System setup.md (v0.2.4)](https://github.com/tarminjapan/AME-AI-Review-System/blob/v0.2.4/ame_ai_review_system/docs/setup.md)

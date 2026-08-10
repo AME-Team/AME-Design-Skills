@@ -86,8 +86,16 @@ CRITICAL/HIGH/MIDDLE がなく、LOW のみの指摘が **2 回連続** した�
 ```text
 GitHub API   : https://api.github.com
 GraphQL      : https://api.github.com/graphql
-リポジトリ    : tarminjapan/AME-AI-Review-System
+リポジトリ    : <対象リポジトリ>（本スキルを配置したリポジトリ）
+```
 
+> 対象リポジトリは実行時に動的に解決する（ハードコードしない）。ローカルでは
+> `git remote get-url origin` または `gh repo view --json nameWithOwner` で導出し、
+> API 呼び出しには `-R owner/repo`（gh）や `/repos/{owner}/{repo}/...`（REST）を付与する。
+> GitHub Actions 上では `GITHUB_REPOSITORY` / `GITHUB_API_URL` が自動設定されるため、
+> ワークフロー側での環境変数明示は不要です（`github_client.resolve_env` が解決します）。
+
+```text
 トークン取得（優先順位）:
   CI (GitHub Actions):
     1. actions/create-github-app-token@v2 が発行するインストールトークン
@@ -105,10 +113,6 @@ GraphQL      : https://api.github.com/graphql
 スレッド返信   : POST /repos/{repo}/pulls/{pr}/comments/{id}/replies
 Resolve       : GraphQL mutation resolveReviewThread(input: {threadId: ID!})
 ```
-
-> GitHub Actions 上では `GITHUB_REPOSITORY` / `GITHUB_API_URL`
-> が自動設定されるため、ワークフロー側での環境変数明示は不要です（`github_client.resolve_env`
-> が解決します）。
 
 ---
 

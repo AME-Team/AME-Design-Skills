@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "description": "TypeScript SDK sidecars for AME AI Review System and their dependencies.",
+  "//dependencies": "検証済み major.minor を下限とした範囲指定。lockfile は paths.ensure_engines_ts() が npm install で都度生成するため Git 管理対象外（.gitignore 参照）。",
   "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "*",
-    "@opencode-ai/sdk": "*"
+    "@anthropic-ai/claude-agent-sdk": "^0.3.0",
+    "@opencode-ai/sdk": "^1.18.0"
   }
 }

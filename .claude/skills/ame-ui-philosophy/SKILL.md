@@ -84,9 +84,9 @@ Tailwind クラス適用時は次を厳守する。
 - **ダークモード**: 背景 `bg-gray-900`（純黒 `#000` を避ける）、テキスト `text-gray-100/300/400`
 
 テーマ切替は `light` / `dark` / `system` をサポートし、`app_settings` へ永続化する。
-保存スキーマ例（本リポジトリ）: `{ locale: "ja"|"en", themeMode: "light"|"dark"|"system", colorPreset: "<presetId>", fontPreset: "default"|"serif"|"custom", customFont: string }`。
-キー名・既定値は実装（SettingsContext 等）と同期させること。フォント関連項目（`fontPreset` / `customFont`）の仕様は
-`ame-ui-typography` Skill を参照する。
+保存スキーマ例（本リポジトリ）: `{ locale: "ja"|"en", themeMode: "light"|"dark"|"system", colorPreset: "<presetId>", fontPreset: <FontPreset enum 値>, customFont: string }`（`fontPreset` の enum 値の定義は ame-ui-typography Skill を参照）。
+キー名・既定値は実装（SettingsContext 等）と同期させること。フォント関連項目（`fontPreset` / `customFont`）の仕様・enum 値の定義は
+`ame-ui-typography` Skill を単一の情報源として参照する（本 Skill では重複定義しない）。
 
 **クラスベース配色（標準実装）**: テーマは `<html>` の `.dark` クラスで制御する。Tailwind
 CSS v4 では `dark:` バリアントの既定が `prefers-color-scheme`（OS 依存）のため、クラスベース

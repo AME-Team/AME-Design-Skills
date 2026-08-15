@@ -20,8 +20,9 @@
 #   # LLM エンジンとレビューコア（.venv に導入）
 #   uv venv .venv --python 3.12
 #   source .venv/bin/activate
-#   uv pip install <AME-AI-Review-System wheel v0.2.5>（URL は setup.md 参照）
-#   # .ame-review/（config.json / review_prompt.txt）は v0.2.4 と v0.2.5 で内容変更なし。
+#   uv pip install <AME-AI-Review-System wheel v0.2.6>（URL は setup.md 参照）
+#   # .ame-review/（config.json / review_prompt.txt）と .claude/skills/review-round/SKILL.md は
+#   # v0.2.4 → v0.2.6 で内容変更なし（参照残存の grep 確認済み）。
 #   # .venv は .gitignore 対象のため版数同期はローカルで実施する（Gate 1 が参照）。
 #   # npm 依存（markdownlint-cli2 / textlint / prettier / commitlint）
 #   npm ci

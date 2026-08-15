@@ -1,11 +1,9 @@
 import React from "react";
 import { useSettings } from "../../context/SettingsContext";
-import { useGridOverlay } from "../../context/GridOverlayContext";
 import { Sparkles, Grid, AlignLeft, Layers, Contrast } from "lucide-react";
 
 export const PhilosophyTab: React.FC = () => {
   const { t } = useSettings();
-  const { showGridOverlay } = useGridOverlay();
 
   return (
     <div className="space-y-10">
@@ -170,14 +168,6 @@ export const PhilosophyTab: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Grid Overlay Banner Notice */}
-      {showGridOverlay && (
-        <div className="p-4 rounded-lg bg-primary-subtle border border-primary-subtle text-primary text-sm flex items-start gap-3">
-          <Grid className="size-5 shrink-0 mt-0.5" />
-          <p>{t("gridActiveNotice")}</p>
-        </div>
-      )}
     </div>
   );
 };

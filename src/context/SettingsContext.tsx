@@ -110,7 +110,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
 
     root.style.setProperty("--font-current-ui", uiFont);
-    document.body.style.fontFamily = uiFont;
   }, [settings.fontPreset, settings.customFont, settings.locale]);
 
   const setLocale = (locale: Locale) => setSettings((prev) => ({ ...prev, locale }));

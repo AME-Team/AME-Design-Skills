@@ -48,7 +48,10 @@ jobs:
         startsWith(github.event.comment.body, '/review ')))
     uses: AME-Team/AME-AI-Review-System/.github/workflows/review-command.yml@v0.2.5
     with:
-      pr_number: ${{ inputs.pr_number || github.event.issue.number }}
+      # workflow_dispatch の inputs は常に文字列のため、reusable workflow の
+      # pr_number (type: number) へ渡す際は fromJSON で数値化する。
+      # issue_comment 時は inputs が空なので github.event.issue.number にフォールバックする。
+      pr_number: ${{ inputs.pr_number && fromJSON(inputs.pr_number) || github.event.issue.number }}
       # Issue #71: workflow_dispatch 時は github.event.comment が無く command が空になる。
       # 空文字は || で /request-review へフォールバックし、手動実行でも判定を通す。
       command: ${{ github.event.comment.body || '/request-review' }}

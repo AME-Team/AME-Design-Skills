@@ -1,7 +1,9 @@
 ---
 # AME AI Review System — インライン返信に対する LGTM/追加指摘判断のラッパ (配布先用)。
-# `ame-ai-reviewer init` で生成される。v0.2.4 はリリースタグ (例: v1.0.0) に置換される。
+# `ame-ai-reviewer init` で生成される。v0.2.6 はリリースタグ (例: v1.0.0) に置換される。
 # secrets 登録のエンジン情報 (Issue #40) も引き継ぐ。
+# 配布元リポジトリは tarminjapan org から AME-Team へ移転済み (Issue #100)。
+# 以後の参照は AME-Team/AME-AI-Review-System を使用する（旧 tarminjapan はリダイレクト）。
 
 name: AI Review Reply
 
@@ -15,13 +17,13 @@ permissions:
 
 jobs:
   reply:
-    uses: tarminjapan/AME-AI-Review-System/.github/workflows/review-reply.yml@v0.2.4
+    uses: AME-Team/AME-AI-Review-System/.github/workflows/review-reply.yml@v0.2.6
     with:
       pr_number: ${{ github.event.pull_request.number }}
       comment_id: ${{ github.event.comment.id }}
       comment_body: ${{ github.event.comment.body }}
       comment_user: ${{ github.event.comment.user.login }}
-      system_ref: v0.2.4
+      system_ref: v0.2.6
       review_engine: ${{ vars.REVIEW_ENGINE || '' }}
       review_model: ${{ vars.REVIEW_MODEL || '' }}
       reply_model: ${{ vars.REPLY_MODEL || '' }}

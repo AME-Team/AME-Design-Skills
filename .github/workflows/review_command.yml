@@ -1,8 +1,12 @@
 ---
 # AME AI Review System — PR レビュー呼び出しラッパ (配布先用)。
-# `ame-ai-reviewer init` で生成される。v0.2.4 はリリースタグ (例: v1.0.0) に置換される。
-# 更新は v0.2.4 の差し替えのみ。本体は reusable workflow 側を参照する。
+# `ame-ai-reviewer init` で生成される。v0.2.6 はリリースタグ (例: v1.0.0) に置換される。
+# 更新は v0.2.6 の差し替えのみ。本体は reusable workflow 側を参照する。
 # Issue コメントでは発火しない。secrets 登録のエンジン情報 (Issue #40) も引き継ぐ。
+# 配布元リポジトリは tarminjapan org から AME-Team へ移転済み (Issue #100)。
+# 以後の参照は AME-Team/AME-AI-Review-System を使用する（旧 tarminjapan はリダイレクト）。
+# 参照先タグ v0.2.6 と同タグ内の reusable workflow / setup.md / wheel の実在は
+# 配布元 Releases で確認済み（存在しない場合、PR コメント発火時に解決エラーとなる）。
 
 name: AI Code Review (Command)
 
@@ -42,13 +46,17 @@ jobs:
        (startsWith(github.event.comment.body, '/request-review') ||
         github.event.comment.body == '/review' ||
         startsWith(github.event.comment.body, '/review ')))
-    uses: tarminjapan/AME-AI-Review-System/.github/workflows/review-command.yml@v0.2.4
+    uses: AME-Team/AME-AI-Review-System/.github/workflows/review-command.yml@v0.2.6
     with:
+      # Issue #104: reusable workflow 側が type: string で受け取るため、
+      # 配布先ラッパで fromJSON() による数値化は不要。workflow_dispatch の
+      # inputs.pr_number (文字列) もそのまま渡せ、issue_comment の number も
+      # string 入力へは自動的に文字列化される。
       pr_number: ${{ inputs.pr_number || github.event.issue.number }}
       # Issue #71: workflow_dispatch 時は github.event.comment が無く command が空になる。
       # 空文字は || で /request-review へフォールバックし、手動実行でも判定を通す。
       command: ${{ github.event.comment.body || '/request-review' }}
-      system_ref: v0.2.4
+      system_ref: v0.2.6
       review_engine: ${{ vars.REVIEW_ENGINE || '' }}
       review_model: ${{ vars.REVIEW_MODEL || '' }}
       reply_model: ${{ vars.REPLY_MODEL || '' }}

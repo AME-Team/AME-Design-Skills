@@ -20,7 +20,8 @@ description:
 ### フロー（Gate 1）
 
 1. **静的解析**（`precommit_require_static_checks` が有効時）
-   - 本リポジトリでは markdownlint-cli2 / textlint / codespell / gitleaks / yamllint / shellcheck / actionlint 等を staged ファイルに対して実行
+   - 本リポジトリでは markdownlint-cli2 / textlint / codespell / gitleaks / yamllint / shellcheck /
+     actionlint 等を staged ファイルに対して実行
    - エラー検出時 → ブロック（コミット失敗）。コードを修正して再 `git add` する
 2. **AI レビュー**（静的解析パス後）
    - `precommit_review.py` が staged + ブランチ差分をレビュー
@@ -51,7 +52,8 @@ PR 上で実行する品質ゲートです。以下のループを未解決ス�
 2. **レビュー依頼** — PR コメントで `/request-review`（エイリアス `/review`）を投稿
    - API: `POST /repos/{owner}/{repo}/issues/{pr}/comments`
    - 本文: `/request-review`
-3. **Circuit Breaker** — 静的解析（本リポジトリでは markdownlint-cli2 / textlint / codespell / gitleaks / yamllint / shellcheck / actionlint 等）を先行実行
+3. **Circuit Breaker** — 静的解析（本リポジトリでは markdownlint-cli2 / textlint / codespell /
+   gitleaks / yamllint / shellcheck / actionlint 等）を先行実行
    - エラー 1 件でもあれば AI レビューをスキップ。エラー修正後に再依頼
 4. **AI レビュー実行** → インラインレビューコメントが PR に投稿される
 5. **レビューコメント取得**
@@ -90,10 +92,11 @@ GraphQL      : https://api.github.com/graphql
 ```
 
 > 対象リポジトリは実行時に動的に解決する（ハードコードしない）。ローカルでは
-> `git remote get-url origin` または `gh repo view --json nameWithOwner` で導出し、
-> API 呼び出しには `-R owner/repo`（gh）や `/repos/{owner}/{repo}/...`（REST）を付与する。
-> GitHub Actions 上では `GITHUB_REPOSITORY` / `GITHUB_API_URL` が自動設定されるため、
-> ワークフロー側での環境変数明示は不要です（`github_client.resolve_env` が解決します）。
+> `git remote get-url origin` または `gh repo view --json nameWithOwner` で導出し、API 呼び出しには
+> `-R owner/repo`（gh）や `/repos/{owner}/{repo}/...`（REST）を付与する。GitHub Actions 上では
+> `GITHUB_REPOSITORY` / `GITHUB_API_URL`
+> が自動設定されるため、ワークフロー側での環境変数明示は不要です（`github_client.resolve_env`
+> が解決します）。
 
 ```text
 トークン取得（優先順位）:

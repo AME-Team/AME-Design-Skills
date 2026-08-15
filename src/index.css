@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+:root {
+  /* Default Primary: Trust Blue (Light) */
+  --color-primary: #005b99;
+  --color-primary-hover: #004b7e;
+  --color-primary-bg-subtle: #ebf4fa;
+  --color-primary-border: #99c7e8;
+
+  /* Fonts as defined in ame-ui-typography */
+  --font-ui-ja-sans: "Noto Sans JP", sans-serif;
+  --font-ui-ja-serif: "Noto Serif JP", serif;
+  --font-ui-en-sans: "Noto Sans", sans-serif;
+  --font-ui-en-serif: "Noto Serif", serif;
+  --font-mono: "Noto Sans Mono", "Noto Sans JP", monospace;
+
+  /* Current Active UI Font */
+  --font-current-ui: "Noto Sans JP", sans-serif;
+}
+
+.dark {
+  /* Default Primary: Trust Blue (Dark) */
+  --color-primary: #3b82c4;
+  --color-primary-hover: #5aa3e5;
+  --color-primary-bg-subtle: rgba(59, 130, 196, 0.15);
+  --color-primary-border: rgba(59, 130, 196, 0.4);
+}
+
+body {
+  font-family: var(--font-current-ui);
+}
+
+.font-mono-code {
+  font-family: var(--font-mono);
+}
+
+/* Primary utility mappings */
+.bg-primary {
+  background-color: var(--color-primary);
+}
+
+.bg-primary-hover:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.bg-primary-subtle {
+  background-color: var(--color-primary-bg-subtle);
+}
+
+.text-primary {
+  color: var(--color-primary);
+}
+
+.border-primary {
+  border-color: var(--color-primary);
+}
+
+.border-primary-subtle {
+  border-color: var(--color-primary-border);
+}
+
+/* Focus ring accessibility */
+.focus-primary:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

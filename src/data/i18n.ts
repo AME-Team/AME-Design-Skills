@@ -56,11 +56,6 @@ export const TRANSLATIONS = {
     contrastTitle: "コントラスト (Contrast)",
     contrastDesc: "サイズ・太さ・文字色で明確な階層差を定義。曖昧な差を排除。",
 
-    gridInspector: "8px グリッドインスペクター",
-    toggleGridOverlay: "8px グリッドオーバーレイ表示切り替え",
-    gridActiveNotice:
-      "8px単位のグリッドが視覚化されています。要素のmargin, padding, gapがすべて8px（または4px倍数）に基づいています。",
-
     // Color section
     colorTitle: "配色システム & 1ポイントカラー",
     colorDescription:
@@ -191,11 +186,6 @@ function renderHeader(user) {
     contrastTitle: "Contrast",
     contrastDesc:
       "Establish distinct hierarchy through sizing, weight, and tone. Ambiguous deltas are prohibited.",
-
-    gridInspector: "8px Spatial Grid Inspector",
-    toggleGridOverlay: "Toggle 8px Grid Overlay",
-    gridActiveNotice:
-      "8px spatial grid is now visualized. All padding, margin, and gap parameters strictly adhere to 8px multiples.",
 
     // Color section
     colorTitle: "Color System & 1-Point Primary Presets",

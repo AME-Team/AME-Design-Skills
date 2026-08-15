@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Palette, Sun, Moon, Laptop, Type, Globe, Grid, Check, ChevronDown } from "lucide-react";
+import { Palette, Sun, Moon, Laptop, Type, Globe, Check, ChevronDown } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
-import { useGridOverlay } from "../context/GridOverlayContext";
 import { COLOR_PRESETS } from "../data/colorPresets";
 import { FontPreset, PrimaryColorPresetId, ThemeMode } from "../types/theme";
 
@@ -17,7 +16,6 @@ export const InteractiveToolbar: React.FC = () => {
     currentEffectiveTheme,
   } = useSettings();
 
-  const { showGridOverlay, setShowGridOverlay } = useGridOverlay();
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
 
   return (
@@ -27,27 +25,12 @@ export const InteractiveToolbar: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          {/* Section Title & Grid Toggle */}
+          {/* Section Title */}
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary">
               <Palette className="size-4" />
               {t("demoPlayground")}
             </span>
-
-            <button
-              onClick={() => setShowGridOverlay(!showGridOverlay)}
-              aria-label={t("toggleGridOverlay")}
-              aria-pressed={showGridOverlay}
-              title={t("toggleGridOverlay")}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors duration-150 ease-out focus-primary ${
-                showGridOverlay
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-              }`}
-            >
-              <Grid className="size-3.5" />
-              <span>{t("gridInspector")}</span>
-            </button>
           </div>
 
           {/* Controls Group */}

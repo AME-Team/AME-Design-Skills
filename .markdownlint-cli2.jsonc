@@ -12,14 +12,10 @@
     // 行長制限のみ無効（全角文字も1桁換算で機械的折返しが困難なため）。
     "MD013": false,
     // テーブル整列（MD060）は無効。全角文字は半角パディングで整列不能のため。
-    "MD060": false
+    "MD060": false,
   },
   // リポジトリ内の全 Markdown を対象（README.md / .claude/skills/**/*.md 含む）。
   "globs": ["**/*.md"],
   // 依存ディレクトリは除外。
-  "ignores": [
-    "**/node_modules/**",
-    "**/vendor/**",
-    "**/.venv/**"
-  ]
+  "ignores": ["**/node_modules/**", "**/vendor/**", "**/.venv/**"],
 }

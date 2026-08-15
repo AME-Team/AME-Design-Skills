@@ -11,8 +11,6 @@ interface SettingsContextType {
   setColorPreset: (presetId: PrimaryColorPresetId) => void;
   setFontPreset: (preset: FontPreset) => void;
   setCustomFont: (font: string) => void;
-  showGridOverlay: boolean;
-  setShowGridOverlay: (show: boolean) => void;
   currentEffectiveTheme: "light" | "dark";
 }
 
@@ -39,7 +37,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return DEFAULT_SETTINGS;
   });
 
-  const [showGridOverlay, setShowGridOverlay] = useState(false);
   const [currentEffectiveTheme, setCurrentEffectiveTheme] = useState<"light" | "dark">("light");
 
   // Translation lookup helper
@@ -134,8 +131,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setColorPreset,
         setFontPreset,
         setCustomFont,
-        showGridOverlay,
-        setShowGridOverlay,
         currentEffectiveTheme,
       }}
     >

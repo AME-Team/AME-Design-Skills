@@ -29,7 +29,9 @@
         } catch {
           /* 保存値が壊れている場合は既定（system）で描画する */
         }
-        var mode = settings.themeMode || "system";
+        var mode = ["light", "dark", "system"].includes(settings.themeMode)
+          ? settings.themeMode
+          : "system";
         var isDark =
           mode === "dark" ||
           (mode === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);

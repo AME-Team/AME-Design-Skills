@@ -1,9 +1,11 @@
 import React from "react";
 import { useSettings } from "../../context/SettingsContext";
+import { useGridOverlay } from "../../context/GridOverlayContext";
 import { Sparkles, Grid, AlignLeft, Layers, Contrast } from "lucide-react";
 
 export const PhilosophyTab: React.FC = () => {
-  const { t, showGridOverlay } = useSettings();
+  const { t } = useSettings();
+  const { showGridOverlay } = useGridOverlay();
 
   return (
     <div className="space-y-10">

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Palette, Sun, Moon, Laptop, Type, Globe, Grid, Check, ChevronDown } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
+import { useGridOverlay } from "../context/GridOverlayContext";
 import { COLOR_PRESETS } from "../data/colorPresets";
 import { FontPreset, PrimaryColorPresetId, ThemeMode } from "../types/theme";
 
@@ -13,11 +14,10 @@ export const InteractiveToolbar: React.FC = () => {
     setColorPreset,
     setFontPreset,
     setCustomFont,
-    showGridOverlay,
-    setShowGridOverlay,
     currentEffectiveTheme,
   } = useSettings();
 
+  const { showGridOverlay, setShowGridOverlay } = useGridOverlay();
   const [fontMenuOpen, setFontMenuOpen] = useState(false);
 
   return (
@@ -37,6 +37,7 @@ export const InteractiveToolbar: React.FC = () => {
             <button
               onClick={() => setShowGridOverlay(!showGridOverlay)}
               aria-label={t("toggleGridOverlay")}
+              aria-pressed={showGridOverlay}
               title={t("toggleGridOverlay")}
               className={`inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-md transition-colors duration-150 ease-out focus-primary ${
                 showGridOverlay

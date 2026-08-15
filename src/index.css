@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Issue #11: テーマ切替の背景色修正。
+   SettingsContext は <html> の .dark クラスでライト/ダークを切替える（クラスベース配色）が、
+   Tailwind v4 の既定 dark: バリアントは prefers-color-scheme（OS 依存）を参照するため
+   背景色が切り替わらなかった。ここで dark: を .dark クラス連動に変更する。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Default Primary: Trust Blue (Light) */
   --color-primary: #005b99;

@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Issue #11: テーマ切替の背景色修正。
+   SettingsContext は <html> の .dark クラスでライト/ダークを切替える（クラスベース配色）が、
+   Tailwind v4 の既定 dark: バリアントは prefers-color-scheme（OS 依存）を参照するため
+   背景色が切り替わらなかった。ここで dark: を .dark クラス連動に変更する。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Default Primary: Trust Blue (Light) */
   --color-primary: #005b99;
@@ -16,6 +22,9 @@
 
   /* Current Active UI Font */
   --font-current-ui: "Noto Sans JP", sans-serif;
+
+  /* --- デモ検証用: 8px Grid Overlay（本番ロジックには影響しない） --- */
+  --color-grid-line: rgba(0, 91, 153, 0.18);
 }
 
 .dark {
@@ -24,6 +33,9 @@
   --color-primary-hover: #5aa3e5;
   --color-primary-bg-subtle: rgba(59, 130, 196, 0.15);
   --color-primary-border: rgba(59, 130, 196, 0.4);
+
+  /* --- デモ検証用: 8px Grid Overlay --- */
+  --color-grid-line: rgba(59, 130, 196, 0.28);
 }
 
 body {
@@ -63,4 +75,18 @@ body {
 .focus-primary:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* --- デモ検証用: 8px Grid Overlay --- */
+/* ame-ui-philosophy が 8px グリッドを規約とするため、UI 全体に 8px 格子を可視化する。
+   pointer-events: none で操作は妨げない。層: Toolbar(z-40) より上、Toast(z-70) より下（z-60）。 */
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--color-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-grid-line) 1px, transparent 1px);
+  background-size: 8px 8px;
 }

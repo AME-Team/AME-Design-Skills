@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSettings } from "./context/SettingsContext";
 import { Header } from "./components/Header";
 import { InteractiveToolbar } from "./components/InteractiveToolbar";
+import { GridOverlay } from "./components/GridOverlay";
 import { Hero } from "./components/Hero";
 import { Footer } from "./components/Footer";
 import { Toast } from "./components/Toast";
@@ -111,6 +112,9 @@ export const AppContent: React.FC = () => {
 
       {/* Toast Notification */}
       <Toast message={toastMessage} visible={toastVisible} />
+
+      {/* 8px グリッドオーバーレイ（グリッドインスペクター有効時のみ表示） */}
+      <GridOverlay />
     </div>
   );
 };

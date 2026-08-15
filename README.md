@@ -119,10 +119,7 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 
 ## AI Review System（開発者向け）
 
-本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System
-v0.2.6）が導入されています。配布元は tarminjapan
-org から AME-Team へ移転済みで、参照先は AME-Team/AME-AI-Review-System（旧 tarminjapan/AME-AI-Review-System、リダイレクト）です (Issue
-#100)。
+本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System v0.2.6）が導入されています。配布元は tarminjapan org から AME-Team へ移転済みで、参照先は AME-Team/AME-AI-Review-System（旧 tarminjapan/AME-AI-Review-System、リダイレクト）です（Issue #100）。
 
 - `.ame-review/`
   … 動作設定（`config.json`）、レビュープロンプト（`review_prompt.txt`）、LLM エンジンサイドカー（`engines-ts/`）

@@ -83,21 +83,25 @@ Tailwind クラス適用時は次を厳守する。
 - **ライトモード**: 背景 `bg-white` / `bg-gray-50`、テキスト `text-gray-900/700/500`
 - **ダークモード**: 背景 `bg-gray-900`（純黒 `#000` を避ける）、テキスト `text-gray-100/300/400`
 
-テーマ切替は `light` / `dark` / `system` をサポートし、`app_settings` へ永続化する。
-保存スキーマ例（本リポジトリ）: `{ locale: "ja"|"en", themeMode: "light"|"dark"|"system", colorPreset: "<presetId>", fontPreset: <FontPreset enum 値>, customFont: string }`（`fontPreset` の enum 値の定義は ame-ui-typography Skill を参照）。
-キー名・既定値は実装（SettingsContext 等）と同期させること。フォント関連項目（`fontPreset` / `customFont`）の仕様・enum 値の定義は
-`ame-ui-typography` Skill を単一の情報源として参照する（本 Skill では重複定義しない）。
+テーマ切替は `light` / `dark` / `system` をサポートし、`app_settings`
+へ永続化する。保存スキーマ例（本リポジトリ）:
+`{ locale: "ja"|"en", themeMode: "light"|"dark"|"system", colorPreset: "<presetId>", fontPreset: <FontPreset enum 値>, customFont: string }`（`fontPreset`
+の enum 値の定義は ame-ui-typography
+Skill を参照）。キー名・既定値は実装（SettingsContext 等）と同期させること。フォント関連項目（`fontPreset`
+/ `customFont`）の仕様・enum 値の定義は `ame-ui-typography`
+Skill を単一の情報源として参照する（本 Skill では重複定義しない）。
 
-**クラスベース配色（標準実装）**: テーマは `<html>` の `.dark` クラスで制御する。Tailwind
-CSS v4 では `dark:` バリアントの既定が `prefers-color-scheme`（OS 依存）のため、クラスベース
-配色を採用する場合は `@custom-variant dark (&:where(.dark, .dark *));` をスタイルエントリへ追加し、
-`.dark` クラス連動に変更すること（CSS 変数 `--color-*` は `.dark` ブロックで別値を定義）。
-`system` モードでは `matchMedia("(prefers-color-scheme: dark)")` の変更リスナーで
-OS テーマ変更へライブ追従すること（初回描画時のみの適用で止めない）。
+**クラスベース配色（標準実装）**: テーマは `<html>` の `.dark` クラスで制御する。Tailwind CSS
+v4 では `dark:` バリアントの既定が
+`prefers-color-scheme`（OS 依存）のため、クラスベース配色を採用する場合は
+`@custom-variant dark (&:where(.dark, .dark *));` をスタイルエントリへ追加し、 `.dark`
+クラス連動に変更すること（CSS 変数 `--color-*` は `.dark` ブロックで別値を定義）。 `system`
+モードでは `matchMedia("(prefers-color-scheme: dark)")`
+の変更リスナーで OS テーマ変更へライブ追従すること（初回描画時のみの適用で止めない）。
 
 **FOUC 対策（初回描画のちらつき防止）**: `<head>` のインラインスクリプトで保存済み**テーマモード**
-（`app_settings.themeMode`）を描画前に `.dark` クラスへ適用すること。適用対象はテーマモードのみとし、
-色プリセット・フォントはアプリ側のマウント処理で適用する。
+（`app_settings.themeMode`）を描画前に `.dark`
+クラスへ適用すること。適用対象はテーマモードのみとし、色プリセット・フォントはアプリ側のマウント処理で適用する。
 
 ### 4.2 1ポイントカラー（5プリセット）
 

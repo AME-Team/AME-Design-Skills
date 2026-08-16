@@ -14,9 +14,11 @@
     "lint:md": "markdownlint-cli2 \"**/*.md\"",
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
     "lint:text": "textlint \"**/*.md\"",
-    "commitlint": "commitlint --edit"
+    "commitlint": "commitlint --edit",
+    "generate:header": "tsx scripts/generate-header-svg.ts"
   },
   "devDependencies": {
+    "tsx": "^4.23.12",
     "@commitlint/cli": "^19.0.0",
     "@commitlint/config-conventional": "^19.0.0",
     "@tailwindcss/vite": "^4.3.3",

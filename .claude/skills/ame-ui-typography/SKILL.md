@@ -78,13 +78,13 @@ Fonts（Webフォント）を必須利用**とする。
 - `Serif`
 - `User Settings`（UI フォント/Mono フォントのユーザー指定）
 
-実装での enum 値（`FontPreset`）は `"default" | "serif" | "custom"` で、
-本節の `Default` / `Serif` / `User Settings` にそれぞれ対応する。
-enum 値は実装上の安定識別子であり、表示ラベル（Default / Serif / User Settings）は
-ロケールごとに翻訳され得るが、enum 値そのものは不変であること。
-保存キーは実装に合わせ `app_settings`（localStorage の保存キー）とし、
-その JSON のプロパティ名を camelCase の `fontPreset`、保存値をこの enum
-値とする。ame-ui-philosophy Skill の保存スキーマ例も同じ enum 値を参照する。
+実装での enum 値（`FontPreset`）は `"default" | "serif" | "custom"` で、本節の `Default` / `Serif` /
+`User Settings` にそれぞれ対応する。enum 値は実装上の安定識別子であり、表示ラベル（Default / Serif /
+User
+Settings）はロケールごとに翻訳され得るが、enum 値そのものは不変であること。保存キーは実装に合わせ
+`app_settings`（localStorage の保存キー）とし、その JSON のプロパティ名を camelCase の
+`fontPreset`、保存値をこの enum 値とする。ame-ui-philosophy
+Skill の保存スキーマ例も同じ enum 値を参照する。
 
 選択状態は `app_settings` に永続化し、再起動後も維持すること。
 

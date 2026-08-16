@@ -1,5 +1,7 @@
 # AME-Design-Skills
 
+![AME-Design-Skills Header](asset/header.svg)
+
 Claude Code 用の Skill 集です。TypeScript + Tailwind
 CSS を用いるプロダクト全般に適用可能な汎用 UI/UX デザイン規約を定義しています。AI Agent（Claude
 Code）が実行時に参照・適用できる Skill として提供します。特定プロジェクト専用ではなく、同スタックを使う任意のリポジトリに導入できます。
@@ -119,7 +121,10 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 
 ## AI Review System（開発者向け）
 
-本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System v0.2.6）が導入されています。配布元は tarminjapan org から AME-Team へ移転済みで、参照先は AME-Team/AME-AI-Review-System（旧 tarminjapan/AME-AI-Review-System、リダイレクト）です（Issue #100）。
+本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System
+v0.2.6）が導入されています。配布元は tarminjapan
+org から AME-Team へ移転済みです。参照先は AME-Team/AME-AI-Review-System（旧 tarminjapan/AME-AI-Review-System、リダイレクト）です（Issue
+`#100` 参照）。
 
 - `.ame-review/`
   … 動作設定（`config.json`）、レビュープロンプト（`review_prompt.txt`）、LLM エンジンサイドカー（`engines-ts/`）
@@ -142,7 +147,7 @@ serve を Basic 認証付きで起動する場合は、認証情報を環境変�
 なお、`/proc/<pid>/environ`
 は同一ユーザーの全プロセスから読み取り可能です。認証情報の取り扱いに注意し、ローカル開発用途での利用を想定してください。
 
-PR レビュー（Gate 2）には GitHub App の Secrets が必要です（`AME_AI_REVIEWER_APP_ID` /
-`AME_AI_REVIEWER_APP_PRIVATE_KEY`）。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
+PR レビュー（Gate 2）には GitHub
+App の Secrets が必要です。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
 
 - [AME-AI-Review-System setup.md (v0.2.6)](https://github.com/AME-Team/AME-AI-Review-System/blob/v0.2.6/ame_ai_review_system/docs/setup.md)

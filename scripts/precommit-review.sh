@@ -31,4 +31,6 @@ if [ -z "${OPENCODE_SERVER_PASSWORD:-}" ]; then
   fi
 fi
 
+export REVIEW_ENGINE="${REVIEW_ENGINE:-opencode}"
+
 exec python -m ame_ai_review_system.precommit_review "$@"

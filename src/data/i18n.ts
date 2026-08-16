@@ -125,6 +125,14 @@ function renderHeader(user) {
     verifyDesc:
       "配置後、~/.claude/skills/ 配下に ame-ui-philosophy/SKILL.md および ame-ui-typography/SKILL.md が存在することを確認してください。",
 
+    // Header Banner Showcase
+    headerBannerTitle: "リポジトリ Header イメージ (SVG)",
+    headerBannerSubtitle:
+      "設定ツールバーの言語・フォント・カラー・テーマ変更にリアルタイムで追従します。",
+    downloadSvg: "SVGをダウンロード",
+    copySvg: "SVGコードをコピー",
+    svgCopied: "SVGコードをコピーしました",
+
     // Footer
     footerText: "AME Design Skills - Developed with AI & Design Standards",
   },
@@ -255,6 +263,14 @@ function renderHeader(user) {
     verifyTitle: "Verify Installation",
     verifyDesc:
       "After installation, verify that ame-ui-philosophy/SKILL.md and ame-ui-typography/SKILL.md exist under ~/.claude/skills/.",
+
+    // Header Banner Showcase
+    headerBannerTitle: "Repository Header Image (SVG)",
+    headerBannerSubtitle:
+      "Dynamically synchronizes with language, font, color, and theme settings from the toolbar.",
+    downloadSvg: "Download SVG",
+    copySvg: "Copy SVG Code",
+    svgCopied: "SVG code copied to clipboard",
 
     // Footer
     footerText: "AME Design Skills - Developed with AI & Design Standards",

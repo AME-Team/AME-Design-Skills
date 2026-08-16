@@ -3,6 +3,7 @@ import { useSettings } from "./context/SettingsContext";
 import { Header } from "./components/Header";
 import { InteractiveToolbar } from "./components/InteractiveToolbar";
 import { Hero } from "./components/Hero";
+import { HeaderBannerShowcase } from "./components/HeaderBannerShowcase";
 import { Footer } from "./components/Footer";
 import { Toast } from "./components/Toast";
 
@@ -67,8 +68,11 @@ export const AppContent: React.FC = () => {
         {/* Hero Section */}
         <Hero onCopyInstall={handleCopyInstall} copied={copied} />
 
-        {/* Tab Navigation Section */}
+        {/* Tab Navigation & Showcase Section */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          {/* Real-time Synchronized Header Image Showcase */}
+          <HeaderBannerShowcase onNotify={triggerToast} />
+
           <nav
             aria-label="Main Navigation Tabs"
             className="flex items-center gap-1 overflow-x-auto border-b border-gray-200 dark:border-gray-800 pb-px text-xs font-medium scrollbar-none"

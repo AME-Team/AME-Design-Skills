@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run generate:header && vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -15,7 +15,8 @@
     "lint:md:fix": "markdownlint-cli2 --fix \"**/*.md\"",
     "lint:text": "textlint \"**/*.md\"",
     "commitlint": "commitlint --edit",
-    "generate:header": "tsx scripts/generate-header-svg.ts"
+    "generate:header": "tsx scripts/generate-header-svg.ts",
+    "check:header": "tsx scripts/generate-header-svg.ts && git diff --exit-code asset/header.svg"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",

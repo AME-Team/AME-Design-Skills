@@ -42,17 +42,17 @@
       .svg-card-bg { fill: var(--bg-card); stroke: var(--border-card); stroke-width: 1; }
       .svg-subtle-box { fill: var(--bg-subtle); }
 
-      .text-title { font-family: 'Noto Sans JP', sans-serif; font-size: 32px; font-weight: 700; fill: var(--text-title); letter-spacing: -0.02em; }
-      .text-tagline { font-family: 'Noto Sans JP', sans-serif; font-size: 15px; font-weight: 400; fill: var(--text-body); letter-spacing: 0.01em; }
+      .text-title { font-family: 'Noto Sans JP', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 32px; font-weight: 700; fill: var(--text-title); letter-spacing: -0.02em; }
+      .text-tagline { font-family: 'Noto Sans JP', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 15px; font-weight: 400; fill: var(--text-body); letter-spacing: 0.01em; }
 
       .badge-primary-bg { fill: var(--color-primary-subtle); stroke: var(--color-primary-border); stroke-width: 1; }
-      .badge-primary-text { font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 600; fill: var(--color-primary); }
+      .badge-primary-text { font-family: 'Noto Sans JP', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: 600; fill: var(--color-primary); }
 
       .badge-neutral-bg { fill: var(--bg-subtle); stroke: var(--border-card); stroke-width: 1; }
       .badge-neutral-text { font-family: 'Noto Sans Mono', monospace; font-size: 11px; font-weight: 500; fill: var(--text-body); }
 
-      .card-title { font-family: 'Noto Sans JP', sans-serif; font-size: 14px; font-weight: 700; fill: var(--text-title); }
-      .card-desc { font-family: 'Noto Sans JP', sans-serif; font-size: 12px; font-weight: 400; fill: var(--text-body); line-height: 1.5; }
+      .card-title { font-family: 'Noto Sans JP', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 14px; font-weight: 700; fill: var(--text-title); }
+      .card-desc { font-family: 'Noto Sans JP', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 12px; font-weight: 400; fill: var(--text-body); line-height: 1.5; }
 
       .mono-text { font-family: 'Noto Sans Mono', monospace; font-size: 11px; fill: var(--text-subtle); }
       .icon-primary { stroke: var(--color-primary); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -186,13 +186,13 @@
 
         <circle cx="10" cy="10" r="9" fill="#005B99" stroke="var(--text-title)" stroke-width="2" />
 
-        <circle cx="36" cy="10" r="9" fill="#2D6A4F" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="36" cy="10" r="9" fill="#2D6A4F" stroke="var(--border-card)" stroke-width="1" />
 
-        <circle cx="62" cy="10" r="9" fill="#C2410C" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="62" cy="10" r="9" fill="#C2410C" stroke="var(--border-card)" stroke-width="1" />
 
-        <circle cx="88" cy="10" r="9" fill="#4338CA" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="88" cy="10" r="9" fill="#4338CA" stroke="var(--border-card)" stroke-width="1" />
 
-        <circle cx="114" cy="10" r="9" fill="#0F766E" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="114" cy="10" r="9" fill="#0F766E" stroke="var(--border-card)" stroke-width="1" />
 
       <text x="146" y="14" class="badge-neutral-text">WCAG 4.5:1 AA</text>
     </g>

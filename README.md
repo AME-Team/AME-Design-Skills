@@ -18,6 +18,15 @@ Agent がこのリポジトリを取得してインストール作業を代行�
 
 いずれも `SKILL.md` 1 ファイル構成（`name` / `description` の YAML frontmatter + 本文）です。
 
+## デモページ & ヘッダー画像
+
+本リポジトリのヘッダー画像（`asset/header.svg`）は、デザイン規約（`src/utils/generateHeaderSvg.ts`）から自動生成されます。`npm run build`
+または `npm run generate:header` で最新化されます。同期状態は `npm run check:header`
+で検証できます。
+
+GitHub 上では環境に応じてシステムフォントへフォールバック表示されます。Google
+Fonts による完全なタイポグラフィと動的カスタマイズ（言語・フォント・カラー切替）は、デモページで確認できます。
+
 ## インストール方法
 
 Claude Code はユーザーレベルの Skill を `~/.claude/skills/<skill-name>/SKILL.md`

@@ -18,5 +18,5 @@ const svgContent = generateHeaderSvg({
   themeMode: "system",
 });
 
-fs.writeFileSync(outputFile, svgContent, "utf-8");
+fs.writeFileSync(outputFile, `${svgContent.trim()}\n`, "utf-8");
 console.log(`Generated SVG header image at: ${outputFile}`);

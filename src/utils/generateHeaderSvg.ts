@@ -60,6 +60,39 @@ const LABELS_EN: SvgLabels = {
   badgeMono: "Mono",
 };
 
+function sanitizeFontFamily(input: string): string {
+  // Enforce max length of 200 characters to prevent overly bloated SVG markup
+  const boundedInput = input.slice(0, 200);
+
+  // Allow alphanumeric, spaces, hyphens, underscores, commas, and Japanese / CJK Unicode ranges.
+  // Quotes (" and ') and XML/HTML special characters are strictly stripped to prevent attribute injection.
+  const sanitized = boundedInput
+    .replace(
+      /[^a-zA-Z0-9\s\-_\,\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/g,
+      ""
+    )
+    .trim();
+
+  if (!sanitized) {
+    return "";
+  }
+
+  // Cap at 5 font families and wrap individual font names in safe quotes if containing spaces/non-ASCII
+  const fonts = sanitized
+    .split(",")
+    .map((f) => f.trim())
+    .filter(Boolean)
+    .slice(0, 5)
+    .map((f) => {
+      if (/[\s\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u3400-\u4DBF\uF900-\uFAFF]/.test(f)) {
+        return `'${f}'`;
+      }
+      return f;
+    });
+
+  return fonts.join(", ");
+}
+
 export function generateHeaderSvg(options: HeaderSvgOptions = {}): string {
   const {
     locale = "ja",
@@ -72,14 +105,21 @@ export function generateHeaderSvg(options: HeaderSvgOptions = {}): string {
   const labels = locale === "en" ? LABELS_EN : LABELS_JA;
   const presetData = COLOR_PRESETS[colorPreset] || COLOR_PRESETS["trust-blue"];
 
-  // Font family resolution
-  let fontFamily = "'Noto Sans JP', 'Noto Sans', sans-serif";
-  if (fontPreset === "custom" && customFont.trim()) {
-    fontFamily = `${customFont}, sans-serif`;
+  // Font family resolution with robust fallback stack
+  const sanitizedCustom = fontPreset === "custom" ? sanitizeFontFamily(customFont) : "";
+  let fontFamily: string;
+  if (sanitizedCustom) {
+    fontFamily = `${sanitizedCustom}, system-ui, sans-serif`;
   } else if (fontPreset === "serif") {
-    fontFamily = locale === "ja" ? "'Noto Serif JP', serif" : "'Noto Serif', serif";
+    fontFamily =
+      locale === "ja"
+        ? "'Noto Serif JP', 'Noto Serif', 'Times New Roman', serif"
+        : "'Noto Serif', 'Times New Roman', serif";
   } else {
-    fontFamily = locale === "ja" ? "'Noto Sans JP', sans-serif" : "'Noto Sans', sans-serif";
+    fontFamily =
+      locale === "ja"
+        ? "'Noto Sans JP', 'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+        : "'Noto Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
   }
 
   const primaryLight = presetData.light.primary;
@@ -333,7 +373,7 @@ export function generateHeaderSvg(options: HeaderSvgOptions = {}): string {
         .map(
           (swatch, idx) => `
         <circle cx="${idx * 26 + 10}" cy="10" r="9" fill="${swatch.color}" stroke="${
-          swatch.isSelected ? "var(--text-title)" : "rgba(255,255,255,0.4)"
+          swatch.isSelected ? "var(--text-title)" : "var(--border-card)"
         }" stroke-width="${swatch.isSelected ? "2" : "1"}" />
       `
         )

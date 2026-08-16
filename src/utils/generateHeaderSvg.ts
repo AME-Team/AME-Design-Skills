@@ -92,14 +92,13 @@ export function generateHeaderSvg(options: HeaderSvgOptions = {}): string {
   const primaryDarkSubtle = presetData.dark.bgSubtle;
   const primaryDarkBorder = presetData.dark.border;
 
-  // 5 Color Preset swatches for display
-  const colorSwatches = [
-    { name: "Trust Blue", color: "#005b99", darkColor: "#3b82c4" },
-    { name: "Stable Green", color: "#2d6a4f", darkColor: "#4f8a6e" },
-    { name: "Grounded Orange", color: "#c2410c", darkColor: "#dd6b3d" },
-    { name: "Sophisticated Indigo", color: "#4338ca", darkColor: "#7c79e8" },
-    { name: "Clarity Teal", color: "#0f766e", darkColor: "#2fa39a" },
-  ];
+  // 5 Color Preset swatches derived dynamically from COLOR_PRESETS (Single Source of Truth)
+  const colorSwatches = Object.values(COLOR_PRESETS).map((preset) => ({
+    id: preset.id,
+    name: locale === "ja" ? preset.name.ja : preset.name.en,
+    color: themeMode === "dark" ? preset.dark.primary : preset.light.primary,
+    isSelected: preset.id === colorPreset,
+  }));
 
   // Dynamic CSS according to theme mode
   let cssThemeRules = "";
@@ -334,8 +333,8 @@ export function generateHeaderSvg(options: HeaderSvgOptions = {}): string {
         .map(
           (swatch, idx) => `
         <circle cx="${idx * 26 + 10}" cy="10" r="9" fill="${swatch.color}" stroke="${
-          swatch.name === presetData.name ? "var(--text-title)" : "rgba(255,255,255,0.4)"
-        }" stroke-width="${swatch.name === presetData.name ? "2" : "1"}" />
+          swatch.isSelected ? "var(--text-title)" : "rgba(255,255,255,0.4)"
+        }" stroke-width="${swatch.isSelected ? "2" : "1"}" />
       `
         )
         .join("")}

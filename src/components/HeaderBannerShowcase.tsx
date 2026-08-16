@@ -73,7 +73,7 @@ export const HeaderBannerShowcase: React.FC<HeaderBannerShowcaseProps> = ({ onNo
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopySvg}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors duration-150 ease-out focus-primary shadow-xs"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ease-out focus-primary shadow-xs"
             aria-label={t("copySvg")}
           >
             {copied ? (
@@ -111,7 +111,7 @@ export const HeaderBannerShowcase: React.FC<HeaderBannerShowcaseProps> = ({ onNo
       </div>
 
       {/* Live Sync Indicator Pill */}
-      <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 px-1 font-mono-code">
+      <div className="flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400 px-1 font-mono">
         <span className="flex items-center gap-1.5">
           <Sparkles className="size-3 text-primary" />
           <span>Live Synchronized SVG Component</span>

@@ -4,7 +4,7 @@
   "pr_review_require_static_checks": true,
   "ai_review_enforce_no_skip": true,
   "review_include_package_dir": false,
-  "precommit_engine": "auto",
+  "precommit_engine": "opencode",
   "show_engine_info_gate1": true,
   "show_engine_info_gate2": true,
   "review_budget_usd": 2.0,

@@ -184,15 +184,15 @@
     <!-- Color Swatches (5 Presets) -->
     <g transform="translate(16, 114)">
 
-        <circle cx="10" cy="10" r="9" fill="#005b99" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="10" cy="10" r="9" fill="#005B99" stroke="var(--text-title)" stroke-width="2" />
 
-        <circle cx="36" cy="10" r="9" fill="#2d6a4f" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="36" cy="10" r="9" fill="#2D6A4F" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
 
-        <circle cx="62" cy="10" r="9" fill="#c2410c" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="62" cy="10" r="9" fill="#C2410C" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
 
-        <circle cx="88" cy="10" r="9" fill="#4338ca" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="88" cy="10" r="9" fill="#4338CA" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
 
-        <circle cx="114" cy="10" r="9" fill="#0f766e" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle cx="114" cy="10" r="9" fill="#0F766E" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
 
       <text x="146" y="14" class="badge-neutral-text">WCAG 4.5:1 AA</text>
     </g>

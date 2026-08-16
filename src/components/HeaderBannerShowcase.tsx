@@ -11,7 +11,12 @@ export const HeaderBannerShowcase: React.FC<HeaderBannerShowcaseProps> = ({ onNo
   const { settings, currentEffectiveTheme, t } = useSettings();
   const [copied, setCopied] = useState(false);
 
-  // Dynamically generate SVG string whenever settings or theme change
+  // Dynamically generate scoped SVG string whenever toolbar settings or theme mode change.
+  // Note: Rendered inline via dangerouslySetInnerHTML to enable live Google Fonts (@import) rendering.
+  // Safety architecture:
+  // 1. Host CSS Collision Prevention: All SVG styles, classes, and CSS variables are scoped with the 'ame-hdr-' namespace.
+  // 2. XSS & Injection Prevention: Custom font inputs are sanitized via sanitizeFontFamily (stripping quotes and HTML/XML tags), and all text labels are XML-escaped via escapeXml.
+  // Standalone XML SVG string for download and clipboard copy
   const svgString = useMemo(() => {
     return generateHeaderSvg({
       locale: settings.locale,
@@ -27,6 +32,11 @@ export const HeaderBannerShowcase: React.FC<HeaderBannerShowcaseProps> = ({ onNo
     settings.colorPreset,
     currentEffectiveTheme,
   ]);
+
+  // For inline HTML rendering (<style> RAWTEXT parsing), normalize XML entities in @import URLs
+  const inlineSvgString = useMemo(() => {
+    return svgString.replace(/&amp;/g, "&").replace(/&apos;/g, "'");
+  }, [svgString]);
 
   const handleCopySvg = () => {
     navigator.clipboard.writeText(svgString).then(() => {
@@ -102,11 +112,11 @@ export const HeaderBannerShowcase: React.FC<HeaderBannerShowcaseProps> = ({ onNo
         </div>
       </div>
 
-      {/* SVG Image Container */}
+      {/* SVG Image Container (renders inline to support live Google Fonts @import) */}
       <div className="w-full rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-2 sm:p-4 transition-colors duration-200 ease-out shadow-xs">
         <div
-          className="w-full aspect-[1200/440] flex items-center justify-center"
-          dangerouslySetInnerHTML={{ __html: svgString }}
+          className="w-full aspect-[1200/440] flex items-center justify-center [&>svg]:w-full [&>svg]:h-auto"
+          dangerouslySetInnerHTML={{ __html: inlineSvgString }}
         />
       </div>
 

@@ -16,7 +16,8 @@
     "lint:text": "textlint \"**/*.md\"",
     "commitlint": "commitlint --edit",
     "generate:header": "tsx scripts/generate-header-svg.ts",
-    "check:header": "tsx scripts/generate-header-svg.ts && git diff --exit-code asset/header.svg"
+    "check:header": "tsx scripts/test-header-svg.ts && git diff --exit-code asset/header.svg",
+    "test": "tsx scripts/test-header-svg.ts"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",

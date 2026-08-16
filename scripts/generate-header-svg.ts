@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { generateHeaderSvg } from "../src/utils/generateHeaderSvg";
+import { DEFAULT_HEADER_OPTIONS, generateHeaderSvg } from "../src/utils/generateHeaderSvg";
 
 const outputDir = path.resolve(process.cwd(), "asset");
 const outputFile = path.join(outputDir, "header.svg");
@@ -11,12 +11,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // Generate standard dual-theme (prefers-color-scheme compatible) header SVG
-const svgContent = generateHeaderSvg({
-  locale: "ja",
-  fontPreset: "default",
-  colorPreset: "trust-blue",
-  themeMode: "system",
-});
+const svgContent = generateHeaderSvg(DEFAULT_HEADER_OPTIONS);
 
 fs.writeFileSync(outputFile, `${svgContent.trim()}\n`, "utf-8");
 console.log(`Generated SVG header image at: ${outputFile}`);

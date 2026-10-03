@@ -133,10 +133,28 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 
 ## AI Review System（開発者向け）
 
-本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System
-v0.2.6）が導入されています。配布元は tarminjapan
-org から AME-Team へ移転済みです。参照先は AME-Team/AME-AI-Review-System（旧 tarminjapan/AME-AI-Review-System、リダイレクト）です（Issue
+本リポジトリには、静的解析と AI レビューを組み合わせた二重品質ゲートシステム（AME-AI-Review-System）が導入されています。参照先は AME-Team/AME-AI-Review-System です。旧 tarminjapan/AME-AI-Review-System から移転しました（Issue
 `#100` 参照）。
+
+- CI のラッパ（`review_command.yml` / `review_reply.yml`）は hub の移動メジャータグ `v0`
+  を参照する。リリースごとに自動追随するため、配布先での更新作業は不要である。
+- Gate 1 の wheel はローカルの `.venv`（Git 管理外）へ導入するため、**更新は手作業**である。手順は
+  `.pre-commit-config.yaml` の「初回セットアップ」コメントへ集約した。要点は
+  **CI と同じ v0 系**の最新 wheel を入れることである。乖離は
+  `python -c "import ame_ai_review_system; print(__version__)"`
+  と releases ページの突き合わせで検知する。自動化は hub の Issue `#153` で検討中である。
+- 両ラッパの ref は移動メジャータグ `v0` に揃えており、hub 側は両 reusable
+  workflow を同一リリースで公開するため、付け替え後も両者は同一コミットを指す。
+- hub の reusable の入力はすべて
+  `required: false`（既定値あり）であるため、ラッパを再生成しなくても v0 の付け替えに追随できる。不変性が必要な場合は
+  `ame-ai-reviewer init --ref v0.2.16` のようにリリースタグへ固定する。
+- `checks: read` は `review_command.yml` にのみ付与する。Gate 2 のコマンド経路が HEAD SHA の check
+  runs を読むためである。reply 経路は check runs を読まないため付与しない（この非対称は意図的）。
+- ラッパは `ame-ai-reviewer init`
+  の生成物であり、手で編集しない。リポジトリ固有の注記は本 README に置く（`init --force`
+  で再生成しても失われないようにする）。
+- v0 タグと両 reusable workflow（review-command.yml /
+  review-reply.yml）の実在は執筆時点で確認済みである。v0 は移動タグのため、コミット値は都度 releases ページで確認する。
 
 - `.ame-review/`
   … 動作設定（`config.json`）、レビュープロンプト（`review_prompt.txt`）、LLM エンジンサイドカー（`engines-ts/`）
@@ -162,4 +180,6 @@ serve を Basic 認証付きで起動する場合は、認証情報を環境変�
 PR レビュー（Gate 2）には GitHub
 App の Secrets が必要です。セットアップの詳細は導入元プロジェクトのセットアップガイドを参照してください。
 
-- [AME-AI-Review-System setup.md (v0.2.6)](https://github.com/AME-Team/AME-AI-Review-System/blob/v0.2.6/ame_ai_review_system/docs/setup.md)
+- [AME-AI-Review-System setup.md](https://github.com/AME-Team/AME-AI-Review-System/blob/v0/ame_ai_review_system/docs/setup.md)
+  （参照 ref を移動メジャータグ `v0` に統一。最新のドキュメントは
+  [`main` 版](https://github.com/AME-Team/AME-AI-Review-System/blob/main/ame_ai_review_system/docs/setup.md)）

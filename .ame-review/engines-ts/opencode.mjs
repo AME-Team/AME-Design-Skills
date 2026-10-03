@@ -9,6 +9,10 @@
 // npm install で @opencode-ai/sdk を導入する (ESM 解決のため隣接 node_modules が必要)。
 // モデルは provider/model 形式 (例: anthropic/claude-sonnet-4) を指定すること。
 // レビュー完了後は作成したセッションを削除し、サーバ側へのセッション蓄積を防ぐ。
+//
+// 接続安定性 (Issue #113): サーバー未起動 (ECONNREFUSED) やコールドスタート時の
+// ヘッダータイムアウト (UND_ERR_HEADERS_TIMEOUT) は retry で回復を試みる。サーバー
+// 自体の自動起動は Python 側アダプタ (opencode_ts.py) が行う。
 
 import { createOpencodeClient } from "@opencode-ai/sdk";
 
@@ -19,6 +23,45 @@ class EngineError extends Error {
     super(message);
     this.name = "EngineError";
   }
+}
+
+// finish=length で output=0 になったことを表す業務エラー。EngineError を継承し、
+// リトライを使い切った後の最終送出でも main().catch / ts_runner 側で「業務エラー」
+// として扱えるようにする（Issue #137）。
+class LengthExhaustedError extends EngineError {
+  constructor(message) {
+    super(message);
+    this.name = "LengthExhaustedError";
+  }
+}
+
+// Issue #113: 一時的な接続・ヘッダータイムアウトは retry で回復できる。
+const MAX_PROMPT_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 5000;
+
+// Issue #137: finish=length で空応答した際に variant を順に下げてリトライする。
+// high→medium→low と reasoning を減らす。step down 先が無い場合（low 起点や
+// --variant 未指定のサーバー既定）は variant を変えず、MAX_LENGTH_RETRIES の残余を
+// 同じ variant の再試行に使う（非決定性回復, Issue #137）。
+const MAX_LENGTH_RETRIES = 2;
+const VARIANT_STEP_DOWN = { high: "medium", medium: "low", low: undefined };
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isRetryableError(err) {
+  if (!err) return false;
+  const code = err.code || (err.cause && err.cause.code) || "";
+  const message = String(err.message || "").toLowerCase();
+  return (
+    code === "ECONNREFUSED" ||
+    code === "UND_ERR_HEADERS_TIMEOUT" ||
+    code === "UND_ERR_SOCKET" ||
+    message.includes("headers timeout") ||
+    message.includes("fetch failed") ||
+    message.includes("econnrefused")
+  );
 }
 
 function parseArgs() {
@@ -59,6 +102,66 @@ function splitModel(model) {
   return { providerID: model.slice(0, idx), modelID: model.slice(idx + 1) };
 }
 
+// 1 回分の「セッション作成 → プロンプト → セッション削除」を実行し、結果テキストを返す。
+// finally で必ずセッションを削除するため、retry の各試行は独立したセッションで行う。
+async function runPromptOnce(client, prompt, opts) {
+  let sessionId = null;
+  try {
+    const session = await client.session.create({ body: { title: "ame-review" } });
+    // session.create の応答は SDK バージョンにより { data: {...} } と生値の両方の
+    // 契約があり得るため、両方へ対応する。
+    sessionId = session?.data?.id || session?.id;
+    if (!sessionId) {
+      // sessionId 不明のため finally でも削除不可。throw して外面の catch へ。
+      throw new EngineError("failed to obtain session id from create response");
+    }
+    const result = await client.session.prompt({
+      path: { id: sessionId },
+      body: {
+        parts: [{ type: "text", text: prompt }],
+        tools: opts.toolsOff,
+        system: opts.system,
+        ...(opts.model ? { model: opts.model } : {}),
+        ...(opts.variant ? { variant: opts.variant } : {}),
+      },
+    });
+
+    // process.exit は finally を迂回してセッション削除をスキップするため throw で抜ける。
+    if (result && result.error) {
+      throw new EngineError(`server error: ${JSON.stringify(result.error)}`);
+    }
+
+    // SDK は responseStyle により { data } ラップと生値の両方の契約があり得るため、
+    // 両方に対応する (data 優先)。空の場合はペイロードを出力して契約ミスマッチを検知可能にする。
+    const payload = result && (result.data || result.response);
+    const text = extractText(payload);
+    if (!text.trim()) {
+      // Issue #137: reasoning 予算を使い切り output が 0 のまま finish=length に
+      // なったケースは、variant を下げたリトライで回復し得るため専用エラーにする。
+      const info = payload && payload.info;
+      const tokens = info && info.tokens;
+      if (info && info.finish === "length" && tokens && tokens.output === 0) {
+        throw new LengthExhaustedError(
+          `finish=length with output=0 (reasoning=${tokens.reasoning})`
+        );
+      }
+      const dump = JSON.stringify(payload ?? null).slice(0, 500);
+      throw new EngineError(`could not extract text from response: ${dump}`);
+    }
+    return text;
+  } finally {
+    // pre-commit / PR レビューで繰り返し実行されるため、セッションを削除して蓄積を防ぐ。
+    // finally 内の削除失敗はレビュー結果へ影響させないよう警告のみで握り潰す。
+    if (sessionId) {
+      try {
+        await client.session.delete({ path: { id: sessionId } });
+      } catch (err) {
+        console.error("[opencode.mjs] failed to delete session:", err);
+      }
+    }
+  }
+}
+
 async function main() {
   const prompt = await readStdin();
   if (!prompt.trim()) {
@@ -84,76 +187,85 @@ async function main() {
     directory: process.cwd(),
   });
 
-  // finally で必ずセッションを削除するため、外枠で宣言する。
-  let sessionId = null;
-  try {
-    const session = await client.session.create({ body: { title: "ame-review" } });
-    // session.create の応答は SDK バージョンにより { data: {...} } と生値の両方の
-    // 契約があり得るため、prompt 側と同様に両方へ対応する。
-    sessionId = session?.data?.id || session?.id;
-    if (!sessionId) {
-      // sessionId 不明のため finally でも削除不可。throw して外面の catch へ。
-      throw new EngineError("failed to obtain session id from create response");
-    }
-    const model = splitModel(opts.model);
-    // レビューは diff がプロンプトに埋め込まれているためツールは不要。
-    // build agent が bash / 外部ディレクトリ読取等で権限確認 (external_directory: ask) に
-    // ハングするのを防ぐため、ツールを明示的に全て無効化する。
-    const toolsOff = {
-      bash: false,
-      edit: false,
-      write: false,
-      read: false,
-      glob: false,
-      grep: false,
-      patch: false,
-      webfetch: false,
-      task: false,
-      todowrite: false,
-      application_launcher: false,
-      question: false,
-      skill: false,
-    };
-    // 弱いモデルはツール無効化下でもツール呼び出し構文 (</tool_calls> 等) を出力して
-    // JSON を壊すことがある。system でツール禁止を強制する (OPENCODE_SYSTEM で上書き可)。
-    const system =
-      process.env.OPENCODE_SYSTEM ||
-      "You are a code review assistant. You MUST NOT call any tools and MUST NOT emit any " +
-        "tool-call syntax. Respond ONLY with a single valid JSON object matching the requested " +
-        "schema. Do not include any other text.";
-    const result = await client.session.prompt({
-      path: { id: sessionId },
-      body: {
-        parts: [{ type: "text", text: prompt }],
-        tools: toolsOff,
+  const model = splitModel(opts.model);
+  // レビューは diff がプロンプトに埋め込まれているためツールは不要。
+  // build agent が bash / 外部ディレクトリ読取等で権限確認 (external_directory: ask) に
+  // ハングするのを防ぐため、ツールを明示的に全て無効化する。
+  const toolsOff = {
+    bash: false,
+    edit: false,
+    write: false,
+    read: false,
+    glob: false,
+    grep: false,
+    patch: false,
+    webfetch: false,
+    task: false,
+    todowrite: false,
+    application_launcher: false,
+    question: false,
+    skill: false,
+  };
+  // 弱いモデルはツール無効化下でもツール呼び出し構文 (</tool_calls> 等) を出力して
+  // JSON を壊すことがある。system でツール禁止を強制する (OPENCODE_SYSTEM で上書き可)。
+  const system =
+    process.env.OPENCODE_SYSTEM ||
+    "You are a code review assistant. You MUST NOT call any tools and MUST NOT emit any " +
+      "tool-call syntax. Respond ONLY with a single valid JSON object matching the requested " +
+      "schema. Do not include any other text.";
+
+  // Issue #113: 接続エラー・ヘッダータイムアウトはバックオフ付きで retry。
+  // Issue #137: finish=length で空応答した場合は variant を下げてリトライし、
+  // 回復不能なら従来どおり業務エラーとして送出する。
+  let attempt = 0;
+  // opts.variant は parseArgs() が --variant <value> から設定する (opencode_ts.py が
+  // thinking → --variant を渡す)。値が無ければ undefined (サーバー既定) のまま。
+  let variant = opts.variant;
+  let lengthRetries = 0;
+  while (true) {
+    attempt++;
+    try {
+      const text = await runPromptOnce(client, prompt, {
+        model,
+        toolsOff,
         system,
-        ...(model ? { model } : {}),
-      },
-    });
-
-    // process.exit は finally を迂回してセッション削除をスキップするため throw で抜ける。
-    if (result && result.error) {
-      throw new EngineError(`server error: ${JSON.stringify(result.error)}`);
-    }
-
-    // SDK は responseStyle により { data } ラップと生値の両方の契約があり得るため、
-    // 両方に対応する (data 優先)。空の場合はペイロードを出力して契約ミスマッチを検知可能にする。
-    const payload = result && (result.data || result.response);
-    const text = extractText(payload);
-    if (!text.trim()) {
-      const dump = JSON.stringify(payload ?? null).slice(0, 500);
-      throw new EngineError(`could not extract text from response: ${dump}`);
-    }
-    process.stdout.write(text);
-  } finally {
-    // pre-commit / PR レビューで繰り返し実行されるため、セッションを削除して蓄積を防ぐ。
-    // finally 内の削除失敗はレビュー結果へ影響させないよう警告のみで握り潰す。
-    if (sessionId) {
-      try {
-        await client.session.delete({ path: { id: sessionId } });
-      } catch (err) {
-        console.error("[opencode.mjs] failed to delete session:", err);
+        variant,
+      });
+      process.stdout.write(text);
+      return;
+    } catch (err) {
+      if (err instanceof LengthExhaustedError && lengthRetries < MAX_LENGTH_RETRIES) {
+        const next = VARIANT_STEP_DOWN[variant];
+        if (next !== undefined) {
+          // high→medium→low と reasoning を下げて再試行する。
+          variant = next;
+          console.error(
+            `[opencode.mjs] finish=length with empty output; retry ` +
+              `${lengthRetries + 1}/${MAX_LENGTH_RETRIES} with variant=${next}...`
+          );
+        } else {
+          // 既に最低段 (low / サーバー既定)。server default はむしろ reasoning が
+          // 高くなり得るため上げず、同じ variant で再試行する (非決定性回復, Issue #137)。
+          console.error(
+            `[opencode.mjs] finish=length with empty output; retry ` +
+              `${lengthRetries + 1}/${MAX_LENGTH_RETRIES} (variant stays ` +
+              `${variant ?? "server default"})...`
+          );
+        }
+        lengthRetries++;
+        attempt = 0; // 接続リトライ回数も振り直す
+        continue;
       }
+      if (isRetryableError(err) && attempt < MAX_PROMPT_ATTEMPTS) {
+        const delay = RETRY_BASE_DELAY_MS * attempt;
+        console.error(
+          `[opencode.mjs] attempt ${attempt}/${MAX_PROMPT_ATTEMPTS} failed ` +
+            `(${err.message}); retrying in ${delay}ms...`
+        );
+        await sleep(delay);
+        continue;
+      }
+      throw err;
     }
   }
 }
@@ -161,7 +273,7 @@ async function main() {
 main().catch((err) => {
   // 業務エラー（EngineError）は既にメッセージが組まれているので URL を伏せる。
   // 接続・SDK 由来のエラーは接続先 URL を併記して triage を容易にする。
-  if (err && err.name === "EngineError") {
+  if (err instanceof EngineError) {
     console.error("[opencode.mjs]", err.message);
   } else {
     console.error(

@@ -1,9 +1,16 @@
 ---
 # AME AI Review System — インライン返信に対する LGTM/追加指摘判断のラッパ (配布先用)。
-# `ame-ai-reviewer init` で生成される。v0.2.6 はリリースタグ (例: v1.0.0) に置換される。
-# secrets 登録のエンジン情報 (Issue #40) も引き継ぐ。
-# 配布元リポジトリは tarminjapan org から AME-Team へ移転済み (Issue #100)。
-# 以後の参照は AME-Team/AME-AI-Review-System を使用する（旧 tarminjapan はリダイレクト）。
+# `ame-ai-reviewer init` が生成する。参照 ref: v0 (現行バージョンの移動メジャータグ)。
+# 移動タグは hub のリリースごとに付け替えられるため、配布先での更新作業は不要である。
+# 特定バージョンへ固定したい場合のみ ref を書き換える。secrets 登録のエンジン情報 (Issue
+# #40) も引き継ぐ。
+#
+# 注意 (Issue #115): 本ワークフローに concurrency を設定しないこと。
+#   pull_request_review_comment イベントは返信ごとに個別の run を生成する。
+#   これを concurrency.group で PR 単位にまとめると、短時間で並列投稿された
+#   後続 run が cancel/skip され、bot の LGTM 応答が一部のスレッドに届かなくなる
+#   (1 返信 = 1 LGTM の契約が崩れる)。reply.py は TRIGGER_COMMENT_ID で対象スレッドを
+#   絞り込み、投稿前に再チェックして並走実行の重複 LGTM を防ぐ設計のため直列化は不要。
 
 name: AI Review Reply
 
@@ -17,13 +24,13 @@ permissions:
 
 jobs:
   reply:
-    uses: AME-Team/AME-AI-Review-System/.github/workflows/review-reply.yml@v0.2.6
+    uses: AME-Team/AME-AI-Review-System/.github/workflows/review-reply.yml@v0
     with:
       pr_number: ${{ github.event.pull_request.number }}
       comment_id: ${{ github.event.comment.id }}
       comment_body: ${{ github.event.comment.body }}
       comment_user: ${{ github.event.comment.user.login }}
-      system_ref: v0.2.6
+      system_ref: v0
       review_engine: ${{ vars.REVIEW_ENGINE || '' }}
       review_model: ${{ vars.REVIEW_MODEL || '' }}
       reply_model: ${{ vars.REPLY_MODEL || '' }}

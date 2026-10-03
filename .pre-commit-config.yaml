@@ -20,10 +20,15 @@
 #   # LLM エンジンとレビューコア（.venv に導入）
 #   uv venv .venv --python 3.12
 #   source .venv/bin/activate
-#   uv pip install <AME-AI-Review-System wheel v0.2.6>（URL は setup.md 参照）
-#   # .ame-review/（config.json / review_prompt.txt）と .claude/skills/review-round/SKILL.md は
-#   # v0.2.4 → v0.2.6 で内容変更なし（参照残存の grep 確認済み）。
-#   # .venv は .gitignore 対象のため版数同期はローカルで実施する（Gate 1 が参照）。
+#   uv pip install "ame_ai_review_system @ <v0 系の最新リリースの wheel URL>"
+#   #   URL は https://github.com/AME-Team/AME-AI-Review-System/releases から v0 系の最新を選ぶ
+#   #   (例: v0.2.16 の wheel)。hub が v1 系を出しても CI (移動メジャータグ v0) は v0 系に
+#   #   留まるため、Gate 1 も v0 系から選んで二重ゲートの系列を揃える。
+#   # ローカルの版は `python -c "import ame_ai_review_system; print(__version__)"` で確認する。
+#   # hub の最新 (releases ページ) と比較し、ずれていれば v0 系の最新へ入れ替える。
+#   # CI のラッパは移動メジャータグ v0 を参照して自動追随する（更新作業は不要）。
+#   # .venv は .gitignore 対象のため、Gate 1 の wheel だけはローカルで更新する
+#   # （自動化は hub の Issue #153 で検討中）。
 #   # npm 依存（markdownlint-cli2 / textlint / prettier / commitlint）
 #   npm ci
 #   # フック登録（post-commit は Gate 1 AI レビューの streak リセットに必須）

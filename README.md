@@ -142,12 +142,12 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
   `.pre-commit-config.yaml` の「初回セットアップ」コメントへ集約した。要点は
   **CI と同じ v0 系**の最新 wheel を入れることである。乖離は
   `python -c "import ame_ai_review_system; print(__version__)"`
-  と releases ページの突き合わせで検知する。自動化は hub の Issue `#153` で検討中である。
+  と releases ページの突き合わせで検知する。またフックは起動時に、導入済みの版が hub の v0 系最新より古ければ警告する。
 - 両ラッパの ref は移動メジャータグ `v0` に揃えており、hub 側は両 reusable
   workflow を同一リリースで公開するため、付け替え後も両者は同一コミットを指す。
 - hub の reusable の入力はすべて
   `required: false`（既定値あり）であるため、ラッパを再生成しなくても v0 の付け替えに追随できる。不変性が必要な場合は
-  `ame-ai-reviewer init --ref v0.2.16` のようにリリースタグへ固定する。
+  `ame-ai-reviewer init --ref v0.2.20` のようにリリースタグへ固定する。
 - `checks: read` は `review_command.yml` にのみ付与する。Gate 2 のコマンド経路が HEAD SHA の check
   runs を読むためである。reply 経路は check runs を読まないため付与しない（この非対称は意図的）。
 - ラッパは `ame-ai-reviewer init`

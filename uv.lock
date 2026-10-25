@@ -1,0 +1,31 @@
+version = 1
+revision = 3
+requires-python = ">=3.12"
+
+[[package]]
+name = "ame-ai-review-system"
+version = "0.2.20"
+source = { url = "https://github.com/AME-Team/AME-AI-Review-System/releases/download/v0.2.20/ame_ai_review_system-0.2.20-py3-none-any.whl" }
+wheels = [
+    { url = "https://github.com/AME-Team/AME-AI-Review-System/releases/download/v0.2.20/ame_ai_review_system-0.2.20-py3-none-any.whl", hash = "sha256:df439e6b9c483c28ea0d2b9822f7e05b11d09a56e464518682a2211134be07d8" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "claude-agent-sdk", marker = "extra == 'all'" },
+    { name = "claude-agent-sdk", marker = "extra == 'claude'" },
+    { name = "google-antigravity", marker = "extra == 'all'" },
+    { name = "google-antigravity", marker = "extra == 'antigravity'" },
+]
+provides-extras = ["all", "antigravity", "claude"]
+
+[[package]]
+name = "ame-design-skills-tools"
+version = "0.0.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "ame-ai-review-system" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "ame-ai-review-system", url = "https://github.com/AME-Team/AME-AI-Review-System/releases/download/v0.2.20/ame_ai_review_system-0.2.20-py3-none-any.whl" }]

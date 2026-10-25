@@ -21,7 +21,7 @@ version = "0.0.0"
 description = "Tool-only dependencies for the pre-commit AI review hooks"
 requires-python = ">=3.12"
 dependencies = [
-  "ame-ai-review-system @ https://github.com/AME-Team/AME-AI-Review-System/releases/download/v0.2.20/ame_ai_review_system-0.2.20-py3-none-any.whl",
+  "ame-ai-review-system @ https://github.com/AME-Team/AME-AI-Review-System/releases/download/v0.2.21/ame_ai_review_system-0.2.21-py3-none-any.whl",
 ]
 
 # このプロジェクト自身はビルドしない (パッケージ配布物ではない)。

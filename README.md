@@ -152,7 +152,7 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
   workflow を同一リリースで公開するため、付け替え後も両者は同一コミットを指す。
 - hub の reusable の入力はすべて
   `required: false`（既定値あり）であるため、ラッパを再生成しなくても v0 の付け替えに追随できる。不変性が必要な場合は
-  `ame-ai-reviewer init --ref v0.2.20` のようにリリースタグへ固定する。
+  `ame-ai-reviewer init --ref v0.2.21` のようにリリースタグへ固定する。
 - `checks: read` は `review_command.yml` にのみ付与する。Gate 2 のコマンド経路が HEAD SHA の check
   runs を読むためである。reply 経路は check runs を読まないため付与しない（この非対称は意図的）。
 - ラッパは `ame-ai-reviewer init`

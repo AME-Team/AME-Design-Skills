@@ -1,0 +1,31 @@
+# =============================================================================
+# AME Design Skills — Gate 1 (pre-commit AI レビュー) 用のツール依存
+#
+# このリポジトリは Claude Skill を配布するリポジトリであり、Python の実装は持たない。
+# ここに置くのは `.pre-commit-config.yaml` の `language: system` フックが使う
+# AME AI Review System の wheel 参照だけである。
+#
+# 背景 (Issue #164): 以前は `.venv` へ wheel を手作業で入れており、hub のリリースに
+# 追随できず 4 リリース古い版が動いていた。参照を Git 管理下に置くと次の 3 点が揃う。
+#   1. 再現性 — `uv.lock` が wheel の hash を固定する。
+#   2. 自動同期 — hub の Release ワークフローが `ame-ai-reviewer sync` の差分を PR として
+#      自動作成できる (このリポジトリが `sync` の対象になる)。
+#   3. 差分検知 — `ame-ai-reviewer sync --check` と Drift Audit が版のずれを検知できる。
+# 導入は `uv sync` で行う (`.venv` は Git 管理外)。uv は 0.12 以上を要求する
+# (`uv.lock` は uv 0.12.1 で生成した。古い uv では解決結果が変わり得る)。
+# =============================================================================
+
+[project]
+name = "ame-design-skills-tools"
+version = "0.0.0"
+description = "Tool-only dependencies for the pre-commit AI review hooks"
+requires-python = ">=3.12"
+dependencies = [
+  "ame-ai-review-system @ https://github.com/AME-Team/AME-AI-Review-System/releases/download/v0.2.20/ame_ai_review_system-0.2.20-py3-none-any.whl",
+]
+
+# このプロジェクト自身はビルドしない (パッケージ配布物ではない)。
+[tool.uv]
+package = false
+# `uv.lock` を生成した uv (0.12.1) に合わせる。古い uv では解決結果が変わり得る。
+required-version = ">=0.12"

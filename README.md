@@ -138,11 +138,16 @@ Remove-Item -Recurse -Force "$HOME\.claude\skills\ame-ui-typography"
 
 - CI のラッパ（`review_command.yml` / `review_reply.yml`）は hub の移動メジャータグ `v0`
   を参照する。リリースごとに自動追随するため、配布先での更新作業は不要である。
-- Gate 1 の wheel はローカルの `.venv`（Git 管理外）へ導入するため、**更新は手作業**である。手順は
-  `.pre-commit-config.yaml` の「初回セットアップ」コメントへ集約した。要点は
-  **CI と同じ v0 系**の最新 wheel を入れることである。乖離は
-  `python -c "import ame_ai_review_system; print(__version__)"`
-  と releases ページの突き合わせで検知する。またフックは起動時に、導入済みの版が hub の v0 系最新より古ければ警告する。
+- Gate 1 の wheel 参照は `pyproject.toml`（Git 管理下）に置き、`uv.lock` が hash を固定する。
+  導入は `uv sync` で行う。**前提は uv 0.12 以上と Python 3.12 以上**である（`pyproject.toml` の
+  `required-version` を満たさないと uv が停止する）。hub のリリース時は hub の Release
+  ワークフロー (`Sync Downstream`) が `ame-ai-reviewer sync` の差分を PR として自動作成する
+  ため、**手作業の更新は不要**である。
+- 版の確認は `uv run ame-ai-reviewer sync --check` を使う（activate 済みなら
+  `ame-ai-reviewer sync --check`）。これは `pyproject.toml` の参照を **v0 系**の最新リリースと
+  突き合わせる（CI の移動メジャータグ `v0` と系列を揃えるため、hub が v1 系を出しても Gate 1 は
+  v0 系に留まる）。`uv.lock` の整合は見ない（ロックは `uv sync` / `uv lock` が担う）。
+  参照を持たない構成では `.venv` のインストール版を検査する。
 - 両ラッパの ref は移動メジャータグ `v0` に揃えており、hub 側は両 reusable
   workflow を同一リリースで公開するため、付け替え後も両者は同一コミットを指す。
 - hub の reusable の入力はすべて
